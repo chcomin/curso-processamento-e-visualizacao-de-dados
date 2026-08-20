@@ -4,6 +4,8 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
 
 * M01 - Introdução
     * [Introdução à disciplina](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M01_introducao/1_introducao.html)
+    * [Princípios da Gestalt](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M01_introducao/2_principios_gestalt.html)
+    * [formatos de imagens](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M01_introducao/3_formatos_imagens.html)
 
 ## Tópicos abordados
 
