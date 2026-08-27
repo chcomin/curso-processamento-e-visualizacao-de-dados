@@ -6,6 +6,11 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
     * [Introdução à disciplina](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M01_introducao/1_introducao.html)
     * [Princípios da Gestalt](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M01_introducao/2_principios_gestalt.html)
     * [Formatos de imagens](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M01_introducao/3_formatos_de_imagens.html)
+* M02 - Integridade de dados
+    * [Formatos de dados](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M02_integridade_de_dados/1_formatos_de_dados.html)
+    * [Checagens iniciais](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M02_integridade_de_dados/2_checagens_iniciais.html)
+* M03 - Imputação de valores ausentes e transformação de dados
+    * [Imputação de valores ausentes](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/1_imputacao_de_valores_ausentes.html)
 
 ## Tópicos abordados
 
