@@ -11,6 +11,7 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
     * [Checagens iniciais](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M02_integridade_de_dados/2_checagens_iniciais.html)
 * M03 - Imputação de valores ausentes e transformação de dados
     * [Imputação de valores ausentes](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/1_imputacao_de_valores_ausentes.html)
+    * [Escalonamento e transformação](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/2_transformacao_de_dados.html)
 
 ## Tópicos abordados
 
