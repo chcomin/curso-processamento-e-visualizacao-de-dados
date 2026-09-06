@@ -1081,13 +1081,13 @@ Prof. Cesar Henrique Comin
 <li>A maioria dos algoritmos de aprendizado de máquina <strong>gera um erro</strong> ao encontrar <code>NaN</code>.</li>
 <li>O Pandas em geral <strong>ignora silenciosamente</strong> os ausentes nas agregações.</li>
 </ul>
-<div id="b114b191" class="cell" data-execution_count="1">
+<div id="70059bf0" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href aria-label="1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href aria-label="2"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href aria-label="3"></a></span>
-<span id="cb1-4"><a href aria-label="4"></a>notas <span class="op">=</span> pd.Series([<span class="fl">7.0</span>, np.nan, <span class="fl">9.0</span>, np.nan, <span class="fl">5.0</span>])</span>
-<span id="cb1-5"><a href aria-label="5"></a><span class="bu">print</span>(<span class="st">&quot;média:&quot;</span>, notas.mean())          <span class="co"># média de 3 valores, não de 5</span></span>
-<span id="cb1-6"><a href aria-label="6"></a><span class="bu">print</span>(<span class="st">&quot;soma:&quot;</span>, notas.<span class="bu">sum</span>(), <span class="st">&quot;| contagem:&quot;</span>, notas.count())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href aria-label="4"></a>grades <span class="op">=</span> pd.Series([<span class="fl">7.0</span>, np.nan, <span class="fl">9.0</span>, np.nan, <span class="fl">5.0</span>])</span>
+<span id="cb1-5"><a href aria-label="5"></a><span class="bu">print</span>(<span class="st">&quot;média:&quot;</span>, grades.mean())          <span class="co"># média de 3 valores, não de 5</span></span>
+<span id="cb1-6"><a href aria-label="6"></a><span class="bu">print</span>(<span class="st">&quot;soma:&quot;</span>, grades.<span class="bu">sum</span>(), <span class="st">&quot;| contagem:&quot;</span>, grades.count())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>média: 7.0
 soma: 21.0 | contagem: 3</code></pre>
@@ -1150,10 +1150,10 @@ soma: 21.0 | contagem: 3</code></pre>
 <li><code>df.dropna()</code> é aceitável quando: o mecanismo é MCAR <strong>e</strong> poucas linhas são afetadas.</li>
 <li>O problema é que a ausência costuma estar <strong>espalhada</strong> entre muitas colunas:</li>
 </ul>
-<div id="784ecb97" class="cell" data-execution_count="2">
+<div id="a32d5f29" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href aria-label="1"></a>p <span class="op">=</span> <span class="fl">0.05</span>          <span class="co"># 5% de ausência por célula, independente</span></span>
-<span id="cb3-2"><a href aria-label="2"></a>n_colunas <span class="op">=</span> <span class="dv">20</span></span>
-<span id="cb3-3"><a href aria-label="3"></a><span class="bu">print</span>(<span class="ss">f&quot;Linhas completas: </span><span class="sc">{</span>(<span class="dv">1</span> <span class="op">-</span> p)<span class="op">**</span>n_colunas<span class="sc">:.1%}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href aria-label="2"></a>n_columns <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb3-3"><a href aria-label="3"></a><span class="bu">print</span>(<span class="ss">f&quot;Linhas completas: </span><span class="sc">{</span>(<span class="dv">1</span> <span class="op">-</span> p)<span class="op">**</span>n_columns<span class="sc">:.1%}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linhas completas: 35.8%</code></pre>
 </div>
@@ -1169,7 +1169,7 @@ soma: 21.0 | contagem: 3</code></pre>
 <li>O fato de o valor <strong>estar faltando</strong> muitas vezes é informativo (especialmente sob MNAR).</li>
 <li>Solução barata: criar uma coluna indicadora antes de imputar.</li>
 </ul>
-<div id="bc82b863" class="cell" data-execution_count="3">
+<div id="d6ddc858" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href aria-label="1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">&quot;renda&quot;</span>: [<span class="fl">3500.0</span>, np.nan, <span class="fl">8200.0</span>, np.nan]})</span>
 <span id="cb5-2"><a href aria-label="2"></a>df[<span class="st">&quot;renda_faltante&quot;</span>] <span class="op">=</span> df[<span class="st">&quot;renda&quot;</span>].isna()</span>
 <span id="cb5-3"><a href aria-label="3"></a>df[<span class="st">&quot;renda&quot;</span>] <span class="op">=</span> df[<span class="st">&quot;renda&quot;</span>].fillna(df[<span class="st">&quot;renda&quot;</span>].median())</span>
@@ -1244,14 +1244,14 @@ soma: 21.0 | contagem: 3</code></pre>
 <ul>
 <li>Substitui todos os valores ausentes por um valor informado</li>
 </ul>
-<div id="0ec1cf0a" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href aria-label="1"></a>notas <span class="op">=</span> pd.Series([<span class="fl">7.0</span>, np.nan, <span class="fl">9.0</span>, np.nan, <span class="fl">5.0</span>],</span>
-<span id="cb7-2"><a href aria-label="2"></a>                  index<span class="op">=</span>[<span class="st">&quot;Ana&quot;</span>, <span class="st">&quot;Bruno&quot;</span>, <span class="st">&quot;Carla&quot;</span>, <span class="st">&quot;Diego&quot;</span>, <span class="st">&quot;Elisa&quot;</span>])</span>
+<div id="056de5d9" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href aria-label="1"></a>grades <span class="op">=</span> pd.Series([<span class="fl">7.0</span>, np.nan, <span class="fl">9.0</span>, np.nan, <span class="fl">5.0</span>],</span>
+<span id="cb7-2"><a href aria-label="2"></a>                   index<span class="op">=</span>[<span class="st">&quot;Ana&quot;</span>, <span class="st">&quot;Bruno&quot;</span>, <span class="st">&quot;Carla&quot;</span>, <span class="st">&quot;Diego&quot;</span>, <span class="st">&quot;Elisa&quot;</span>])</span>
 <span id="cb7-3"><a href aria-label="3"></a></span>
 <span id="cb7-4"><a href aria-label="4"></a><span class="bu">print</span>(pd.DataFrame({</span>
-<span id="cb7-5"><a href aria-label="5"></a>    <span class="st">&quot;original&quot;</span>: notas,</span>
-<span id="cb7-6"><a href aria-label="6"></a>    <span class="st">&quot;fillna(0)&quot;</span>: notas.fillna(<span class="dv">0</span>),</span>
-<span id="cb7-7"><a href aria-label="7"></a>    <span class="st">&quot;fillna(média)&quot;</span>: notas.fillna(notas.mean()),</span>
+<span id="cb7-5"><a href aria-label="5"></a>    <span class="st">&quot;original&quot;</span>: grades,</span>
+<span id="cb7-6"><a href aria-label="6"></a>    <span class="st">&quot;fillna(0)&quot;</span>: grades.fillna(<span class="dv">0</span>),</span>
+<span id="cb7-7"><a href aria-label="7"></a>    <span class="st">&quot;fillna(média)&quot;</span>: grades.fillna(grades.mean()),</span>
 <span id="cb7-8"><a href aria-label="8"></a>}))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       original  fillna(0)  fillna(média)
@@ -1268,17 +1268,17 @@ Elisa       5.0        5.0            5.0</code></pre>
 <ul>
 <li>Preencher com a média <strong>global</strong> ignora a estrutura dos dados. Quase sempre existe um grupo mais informativo.</li>
 </ul>
-<div id="0d757e80" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href aria-label="1"></a>df_alugueis <span class="op">=</span> pd.DataFrame({</span>
+<div id="5979734a" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href aria-label="1"></a>df_rents <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb9-2"><a href aria-label="2"></a>    <span class="st">&quot;cidade&quot;</span>: [<span class="st">&quot;SP&quot;</span>, <span class="st">&quot;SP&quot;</span>, <span class="st">&quot;RJ&quot;</span>, <span class="st">&quot;RJ&quot;</span>, <span class="st">&quot;SP&quot;</span>],</span>
 <span id="cb9-3"><a href aria-label="3"></a>    <span class="st">&quot;aluguel&quot;</span>: [<span class="fl">3000.0</span>, np.nan, <span class="fl">2000.0</span>, <span class="fl">2200.0</span>, <span class="fl">3400.0</span>],</span>
 <span id="cb9-4"><a href aria-label="4"></a>})</span>
 <span id="cb9-5"><a href aria-label="5"></a></span>
 <span id="cb9-6"><a href aria-label="6"></a><span class="co"># Gera a série [media_sp, media_sp, media_rj, media_rj, media_sp]</span></span>
-<span id="cb9-7"><a href aria-label="7"></a>media_cidade <span class="op">=</span> df_alugueis.groupby(<span class="st">&quot;cidade&quot;</span>)[<span class="st">&quot;aluguel&quot;</span>].transform(<span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb9-7"><a href aria-label="7"></a>city_mean <span class="op">=</span> df_rents.groupby(<span class="st">&quot;cidade&quot;</span>)[<span class="st">&quot;aluguel&quot;</span>].transform(<span class="st">&quot;mean&quot;</span>)</span>
 <span id="cb9-8"><a href aria-label="8"></a></span>
-<span id="cb9-9"><a href aria-label="9"></a>df_alugueis <span class="op">=</span> df_alugueis[<span class="st">&quot;aluguel&quot;</span>].fillna(media_cidade)</span>
-<span id="cb9-10"><a href aria-label="10"></a><span class="bu">print</span>(df_alugueis)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-9"><a href aria-label="9"></a>df_rents <span class="op">=</span> df_rents[<span class="st">&quot;aluguel&quot;</span>].fillna(city_mean)</span>
+<span id="cb9-10"><a href aria-label="10"></a><span class="bu">print</span>(df_rents)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0    3000.0
 1    3200.0
@@ -1294,14 +1294,14 @@ Name: aluguel, dtype: float64</code></pre>
 <ul>
 <li>Imputar pela média <strong>preserva a média</strong>, mas encolhe a <strong>variância</strong> e cria um pico artificial.</li>
 </ul>
-<div id="b3ed8ced" class="cell" data-execution_count="7">
+<div id="151ccb92" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href aria-label="1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
-<span id="cb11-2"><a href aria-label="2"></a>alturas <span class="op">=</span> pd.Series(rng.normal(<span class="fl">1.70</span>, <span class="fl">0.10</span>, <span class="dv">500</span>))</span>
-<span id="cb11-3"><a href aria-label="3"></a>com_nan <span class="op">=</span> alturas.mask(rng.random(<span class="dv">500</span>) <span class="op">&lt;</span> <span class="fl">0.3</span>)      <span class="co"># 30% ausentes (MCAR)</span></span>
-<span id="cb11-4"><a href aria-label="4"></a>imputada <span class="op">=</span> com_nan.fillna(com_nan.mean())</span>
+<span id="cb11-2"><a href aria-label="2"></a>heights <span class="op">=</span> pd.Series(rng.normal(<span class="fl">1.70</span>, <span class="fl">0.10</span>, <span class="dv">500</span>))</span>
+<span id="cb11-3"><a href aria-label="3"></a>with_nan <span class="op">=</span> heights.mask(rng.random(<span class="dv">500</span>) <span class="op">&lt;</span> <span class="fl">0.3</span>)      <span class="co"># 30% ausentes (MCAR)</span></span>
+<span id="cb11-4"><a href aria-label="4"></a>imputed <span class="op">=</span> with_nan.fillna(with_nan.mean())</span>
 <span id="cb11-5"><a href aria-label="5"></a></span>
-<span id="cb11-6"><a href aria-label="6"></a><span class="bu">print</span>(<span class="ss">f&quot;média  original: </span><span class="sc">{</span>alturas<span class="sc">.</span>mean()<span class="sc">:.3f}</span><span class="ss"> | imputada: </span><span class="sc">{</span>imputada<span class="sc">.</span>mean()<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
-<span id="cb11-7"><a href aria-label="7"></a><span class="bu">print</span>(<span class="ss">f&quot;desvio original: </span><span class="sc">{</span>alturas<span class="sc">.</span>std()<span class="sc">:.3f}</span><span class="ss"> | imputada: </span><span class="sc">{</span>imputada<span class="sc">.</span>std()<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-6"><a href aria-label="6"></a><span class="bu">print</span>(<span class="ss">f&quot;média  original: </span><span class="sc">{</span>heights<span class="sc">.</span>mean()<span class="sc">:.3f}</span><span class="ss"> | imputada: </span><span class="sc">{</span>imputed<span class="sc">.</span>mean()<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb11-7"><a href aria-label="7"></a><span class="bu">print</span>(<span class="ss">f&quot;desvio original: </span><span class="sc">{</span>heights<span class="sc">.</span>std()<span class="sc">:.3f}</span><span class="ss"> | imputada: </span><span class="sc">{</span>imputed<span class="sc">.</span>std()<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>média  original: 1.699 | imputada: 1.699
 desvio original: 0.096 | imputada: 0.079</code></pre>
@@ -1310,7 +1310,7 @@ desvio original: 0.096 | imputada: 0.079</code></pre>
 </section>
 <section id="o-pico-artificial" class="slide level2">
 <h2>O pico artificial</h2>
-<div id="4778eaa2" class="cell" data-execution_count="8">
+<div id="b97c00fc" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1353,12 +1353,12 @@ desvio original: 0.096 | imputada: 0.079</code></pre>
 </section>
 <section id="ffill-exemplo" class="slide level2">
 <h2><code>ffill</code> — exemplo</h2>
-<div id="420427f6" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href aria-label="1"></a>precos <span class="op">=</span> pd.Series(</span>
+<div id="936d1089" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href aria-label="1"></a>prices <span class="op">=</span> pd.Series(</span>
 <span id="cb13-2"><a href aria-label="2"></a>    [np.nan, <span class="fl">31.2</span>, np.nan, np.nan, <span class="fl">32.5</span>, np.nan, <span class="fl">33.0</span>],</span>
 <span id="cb13-3"><a href aria-label="3"></a>    index<span class="op">=</span>pd.date_range(<span class="st">&quot;2024-03-01&quot;</span>, periods<span class="op">=</span><span class="dv">7</span>, freq<span class="op">=</span><span class="st">&quot;D&quot;</span>))</span>
 <span id="cb13-4"><a href aria-label="4"></a></span>
-<span id="cb13-5"><a href aria-label="5"></a><span class="bu">print</span>(pd.DataFrame({<span class="st">&quot;original&quot;</span>: precos, <span class="st">&quot;ffill&quot;</span>: precos.ffill()}))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-5"><a href aria-label="5"></a><span class="bu">print</span>(pd.DataFrame({<span class="st">&quot;original&quot;</span>: prices, <span class="st">&quot;ffill&quot;</span>: prices.ffill()}))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            original  ffill
 2024-03-01       NaN    NaN
@@ -1379,11 +1379,11 @@ desvio original: 0.096 | imputada: 0.079</code></pre>
 <ul>
 <li>Espelho do <code>ffill</code>: propaga o <strong>próximo</strong> valor válido para trás.</li>
 </ul>
-<div id="efe7ddfa" class="cell" data-execution_count="10">
+<div id="17c65155" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href aria-label="1"></a><span class="bu">print</span>(pd.DataFrame({</span>
-<span id="cb15-2"><a href aria-label="2"></a>    <span class="st">&quot;original&quot;</span>: precos,</span>
-<span id="cb15-3"><a href aria-label="3"></a>    <span class="st">&quot;bfill&quot;</span>: precos.bfill(),</span>
-<span id="cb15-4"><a href aria-label="4"></a>    <span class="st">&quot;ffill+bfill&quot;</span>: precos.ffill().bfill(),</span>
+<span id="cb15-2"><a href aria-label="2"></a>    <span class="st">&quot;original&quot;</span>: prices,</span>
+<span id="cb15-3"><a href aria-label="3"></a>    <span class="st">&quot;bfill&quot;</span>: prices.bfill(),</span>
+<span id="cb15-4"><a href aria-label="4"></a>    <span class="st">&quot;ffill+bfill&quot;</span>: prices.ffill().bfill(),</span>
 <span id="cb15-5"><a href aria-label="5"></a>}))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            original  bfill  ffill+bfill
@@ -1429,15 +1429,15 @@ desvio original: 0.096 | imputada: 0.079</code></pre>
 <ul>
 <li>Temperatura horária de um dia, com dois buracos: um na subida da manhã e outro no pico da tarde.</li>
 </ul>
-<div id="4fa56c32" class="cell" data-execution_count="12">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href aria-label="1"></a>horas <span class="op">=</span> np.arange(<span class="dv">24</span>)</span>
-<span id="cb17-2"><a href aria-label="2"></a>verdade <span class="op">=</span> pd.Series((<span class="dv">22</span> <span class="op">+</span> <span class="dv">7</span><span class="op">*</span>np.sin(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>(horas <span class="op">-</span> <span class="dv">9</span>)<span class="op">/</span><span class="dv">24</span>)).<span class="bu">round</span>(<span class="dv">1</span>), index<span class="op">=</span>horas)</span>
+<div id="d0944f39" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href aria-label="1"></a>hours <span class="op">=</span> np.arange(<span class="dv">24</span>)</span>
+<span id="cb17-2"><a href aria-label="2"></a>truth <span class="op">=</span> pd.Series((<span class="dv">22</span> <span class="op">+</span> <span class="dv">7</span><span class="op">*</span>np.sin(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>(hours <span class="op">-</span> <span class="dv">9</span>)<span class="op">/</span><span class="dv">24</span>)).<span class="bu">round</span>(<span class="dv">1</span>), index<span class="op">=</span>hours)</span>
 <span id="cb17-3"><a href aria-label="3"></a></span>
-<span id="cb17-4"><a href aria-label="4"></a>buracos <span class="op">=</span> [<span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">14</span>, <span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">17</span>]</span>
-<span id="cb17-5"><a href aria-label="5"></a>observada <span class="op">=</span> verdade.copy()</span>
-<span id="cb17-6"><a href aria-label="6"></a>observada.loc[buracos] <span class="op">=</span> np.nan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-4"><a href aria-label="4"></a>gaps <span class="op">=</span> [<span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">14</span>, <span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">17</span>]</span>
+<span id="cb17-5"><a href aria-label="5"></a>observed <span class="op">=</span> truth.copy()</span>
+<span id="cb17-6"><a href aria-label="6"></a>observed.loc[gaps] <span class="op">=</span> np.nan</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="86e0f47b" class="cell" data-execution_count="13">
+<div id="bfd45a7b" class="cell" data-execution_count="13">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1454,7 +1454,7 @@ desvio original: 0.096 | imputada: 0.079</code></pre>
 <li>O resultado é uma função <strong>constante por partes</strong>.</li>
 <li>Diferente do <code>ffill</code>, ele <strong>olha para os dois lados</strong>.</li>
 </ul>
-<div id="7ac420d6" class="cell" data-execution_count="14">
+<div id="973a8bc2" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href aria-label="1"></a>s <span class="op">=</span> pd.Series([<span class="fl">10.0</span>, np.nan, np.nan, <span class="fl">40.0</span>, <span class="fl">50.0</span>])</span>
 <span id="cb18-2"><a href aria-label="2"></a><span class="bu">print</span>(s.interpolate(method<span class="op">=</span><span class="st">&quot;nearest&quot;</span>).to_numpy())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -1479,16 +1479,16 @@ desvio original: 0.096 | imputada: 0.079</code></pre>
 </section>
 <section id="linear-exemplo" class="slide level2">
 <h2><code>linear</code> — exemplo</h2>
-<div id="2d3037a2" class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href aria-label="1"></a>lin <span class="op">=</span> observada.interpolate(method<span class="op">=</span><span class="st">&quot;linear&quot;</span>)</span>
-<span id="cb20-2"><a href aria-label="2"></a><span class="bu">print</span>(<span class="st">&quot;imputados:&quot;</span>, lin.loc[buracos].<span class="bu">round</span>(<span class="dv">1</span>).to_numpy())</span>
-<span id="cb20-3"><a href aria-label="3"></a><span class="bu">print</span>(<span class="st">&quot;verdade:  &quot;</span>, verdade.loc[buracos].to_numpy())</span>
-<span id="cb20-4"><a href aria-label="4"></a><span class="kw">def</span> erro(serie):</span>
+<div id="a4a1e270" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href aria-label="1"></a>lin <span class="op">=</span> observed.interpolate(method<span class="op">=</span><span class="st">&quot;linear&quot;</span>)</span>
+<span id="cb20-2"><a href aria-label="2"></a><span class="bu">print</span>(<span class="st">&quot;imputados:&quot;</span>, lin.loc[gaps].<span class="bu">round</span>(<span class="dv">1</span>).to_numpy())</span>
+<span id="cb20-3"><a href aria-label="3"></a><span class="bu">print</span>(<span class="st">&quot;verdade:  &quot;</span>, truth.loc[gaps].to_numpy())</span>
+<span id="cb20-4"><a href aria-label="4"></a><span class="kw">def</span> error(series):</span>
 <span id="cb20-5"><a href aria-label="5"></a>    <span class="co">&quot;&quot;&quot;Erro absoluto médio, calculado apenas nos pontos imputados.&quot;&quot;&quot;</span></span>
-<span id="cb20-6"><a href aria-label="6"></a>    <span class="cf">return</span> (serie.loc[buracos] <span class="op">-</span> verdade.loc[buracos]).<span class="bu">abs</span>().mean()</span>
+<span id="cb20-6"><a href aria-label="6"></a>    <span class="cf">return</span> (series.loc[gaps] <span class="op">-</span> truth.loc[gaps]).<span class="bu">abs</span>().mean()</span>
 <span id="cb20-7"><a href aria-label="7"></a></span>
-<span id="cb20-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="ss">f&quot;erro médio linear: </span><span class="sc">{</span>erro(lin)<span class="sc">:.2f}</span><span class="ss"> °C&quot;</span>)</span>
-<span id="cb20-9"><a href aria-label="9"></a><span class="bu">print</span>(<span class="ss">f&quot;erro médio ffill:  </span><span class="sc">{</span>erro(observada.ffill())<span class="sc">:.2f}</span><span class="ss"> °C&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="ss">f&quot;erro médio linear: </span><span class="sc">{</span>error(lin)<span class="sc">:.2f}</span><span class="ss"> °C&quot;</span>)</span>
+<span id="cb20-9"><a href aria-label="9"></a><span class="bu">print</span>(<span class="ss">f&quot;erro médio ffill:  </span><span class="sc">{</span>error(observed.ffill())<span class="sc">:.2f}</span><span class="ss"> °C&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>imputados: [17.5 19.1 20.6 22.2 27.9 27.6 27.4 27.1]
 verdade:   [17.1 18.5 20.2 22.  28.8 29.  28.8 28.1]
@@ -1499,7 +1499,7 @@ erro médio ffill:  2.06 °C</code></pre>
 </section>
 <section id="linear-visualização" class="slide level2">
 <h2><code>linear</code> — visualização</h2>
-<div id="b736d892" class="cell" data-execution_count="16">
+<div id="ee79c843" class="cell" data-execution_count="16">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1525,15 +1525,15 @@ erro médio ffill:  2.06 °C</code></pre>
 </section>
 <section id="cubic-exemplo" class="slide level2">
 <h2><code>cubic</code> — exemplo</h2>
-<div id="5cbfb13f" class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href aria-label="1"></a>cub <span class="op">=</span> observada.interpolate(method<span class="op">=</span><span class="st">&quot;cubic&quot;</span>)</span>
+<div id="94f0cd09" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href aria-label="1"></a>cub <span class="op">=</span> observed.interpolate(method<span class="op">=</span><span class="st">&quot;cubic&quot;</span>)</span>
 <span id="cb22-2"><a href aria-label="2"></a></span>
 <span id="cb22-3"><a href aria-label="3"></a><span class="bu">print</span>(pd.DataFrame({</span>
-<span id="cb22-4"><a href aria-label="4"></a>    <span class="st">&quot;verdade&quot;</span>: verdade.loc[<span class="dv">14</span>:<span class="dv">17</span>],</span>
+<span id="cb22-4"><a href aria-label="4"></a>    <span class="st">&quot;verdade&quot;</span>: truth.loc[<span class="dv">14</span>:<span class="dv">17</span>],</span>
 <span id="cb22-5"><a href aria-label="5"></a>    <span class="st">&quot;linear&quot;</span>: lin.loc[<span class="dv">14</span>:<span class="dv">17</span>].<span class="bu">round</span>(<span class="dv">1</span>),</span>
 <span id="cb22-6"><a href aria-label="6"></a>    <span class="st">&quot;cubic&quot;</span>: cub.loc[<span class="dv">14</span>:<span class="dv">17</span>].<span class="bu">round</span>(<span class="dv">1</span>),</span>
 <span id="cb22-7"><a href aria-label="7"></a>}))</span>
-<span id="cb22-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="ss">f&quot;erro médio cubic: </span><span class="sc">{</span>erro(cub)<span class="sc">:.2f}</span><span class="ss"> °C&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb22-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="ss">f&quot;erro médio cubic: </span><span class="sc">{</span>error(cub)<span class="sc">:.2f}</span><span class="ss"> °C&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    verdade  linear  cubic
 14     28.8    27.9   28.8
@@ -1549,7 +1549,7 @@ erro médio cubic: 0.05 °C</code></pre>
 </section>
 <section id="cubic-visualização" class="slide level2">
 <h2><code>cubic</code> — visualização</h2>
-<div id="604e10e8" class="cell" data-execution_count="18">
+<div id="9a2a452f" class="cell" data-execution_count="18">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1561,7 +1561,7 @@ erro médio cubic: 0.05 °C</code></pre>
 </section>
 <section id="comparando-os-três-métodos" class="slide level2">
 <h2>Comparando os três métodos</h2>
-<div id="0b48f689" class="cell" data-execution_count="19">
+<div id="8a339cc6" class="cell" data-execution_count="19">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1576,7 +1576,7 @@ erro médio cubic: 0.05 °C</code></pre>
 <ul>
 <li>A <em>spline</em> é livre para oscilar dentro do buraco. Perto de um valor atípico, ela extrapola muito além do observado.</li>
 </ul>
-<div id="6c6ffc13" class="cell" data-execution_count="20">
+<div id="7b75b2f9" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href aria-label="1"></a>sensor <span class="op">=</span> pd.Series([<span class="fl">2.0</span>, <span class="fl">2.1</span>, <span class="fl">2.0</span>, <span class="fl">2.2</span>, np.nan, np.nan, np.nan,</span>
 <span id="cb24-2"><a href aria-label="2"></a>                    np.nan, np.nan, np.nan, <span class="fl">9.0</span>, <span class="fl">2.0</span>, <span class="fl">2.1</span>])</span>
 <span id="cb24-3"><a href aria-label="3"></a><span class="bu">print</span>(<span class="st">&quot;cubic: &quot;</span>, sensor.interpolate(method<span class="op">=</span><span class="st">&quot;cubic&quot;</span>).<span class="bu">round</span>(<span class="dv">1</span>).to_numpy())</span>
@@ -1620,16 +1620,16 @@ linear: [2.  2.1 2.  2.2 3.2 4.1 5.1 6.1 7.1 8.  9.  2.  2.1]</code></pre>
 </section>
 <section id="strategymean" class="slide level2">
 <h2><code>strategy=&quot;mean&quot;</code></h2>
-<div id="742b0e84" class="cell" data-execution_count="21">
+<div id="ebcbcdea" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> SimpleImputer</span>
 <span id="cb27-2"><a href aria-label="2"></a></span>
-<span id="cb27-3"><a href aria-label="3"></a>alturas <span class="op">=</span> pd.Series([<span class="fl">1.70</span>, np.nan, <span class="fl">1.85</span>, <span class="fl">1.62</span>, np.nan, <span class="fl">1.78</span>])</span>
+<span id="cb27-3"><a href aria-label="3"></a>heights <span class="op">=</span> pd.Series([<span class="fl">1.70</span>, np.nan, <span class="fl">1.85</span>, <span class="fl">1.62</span>, np.nan, <span class="fl">1.78</span>])</span>
 <span id="cb27-4"><a href aria-label="4"></a></span>
-<span id="cb27-5"><a href aria-label="5"></a>imp_media <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;mean&quot;</span>)</span>
-<span id="cb27-6"><a href aria-label="6"></a>resultado <span class="op">=</span> imp_media.fit_transform(alturas.to_frame())</span>
+<span id="cb27-5"><a href aria-label="5"></a>imp_mean <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;mean&quot;</span>)</span>
+<span id="cb27-6"><a href aria-label="6"></a>result <span class="op">=</span> imp_mean.fit_transform(heights.to_frame())</span>
 <span id="cb27-7"><a href aria-label="7"></a></span>
-<span id="cb27-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="st">&quot;estatística aprendida:&quot;</span>, imp_media.statistics_)</span>
-<span id="cb27-9"><a href aria-label="9"></a><span class="bu">print</span>(pd.Series(resultado.ravel(), index<span class="op">=</span>alturas.index).<span class="bu">round</span>(<span class="dv">3</span>).to_numpy())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb27-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="st">&quot;estatística aprendida:&quot;</span>, imp_mean.statistics_)</span>
+<span id="cb27-9"><a href aria-label="9"></a><span class="bu">print</span>(pd.Series(result.ravel(), index<span class="op">=</span>heights.index).<span class="bu">round</span>(<span class="dv">3</span>).to_numpy())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>estatística aprendida: [1.7375]
 [1.7   1.738 1.85  1.62  1.738 1.78 ]</code></pre>
@@ -1641,14 +1641,14 @@ linear: [2.  2.1 2.  2.2 3.2 4.1 5.1 6.1 7.1 8.  9.  2.  2.1]</code></pre>
 </section>
 <section id="fit-no-treino-transform-no-teste" class="slide level2">
 <h2><code>fit</code> no treino, <code>transform</code> no teste</h2>
-<div id="551b92ac" class="cell" data-execution_count="22">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href aria-label="1"></a>treino <span class="op">=</span> pd.Series([<span class="fl">1.70</span>, np.nan, <span class="fl">1.85</span>, <span class="fl">1.62</span>, <span class="fl">1.78</span>])</span>
-<span id="cb29-2"><a href aria-label="2"></a>teste <span class="op">=</span> pd.Series([<span class="fl">1.90</span>, <span class="fl">2.00</span>, np.nan])        <span class="co"># amostra atipicamente alta</span></span>
+<div id="f1c1f817" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href aria-label="1"></a>train <span class="op">=</span> pd.Series([<span class="fl">1.70</span>, np.nan, <span class="fl">1.85</span>, <span class="fl">1.62</span>, <span class="fl">1.78</span>])</span>
+<span id="cb29-2"><a href aria-label="2"></a>test <span class="op">=</span> pd.Series([<span class="fl">1.90</span>, <span class="fl">2.00</span>, np.nan])        <span class="co"># amostra atipicamente alta</span></span>
 <span id="cb29-3"><a href aria-label="3"></a></span>
-<span id="cb29-4"><a href aria-label="4"></a>imp <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;mean&quot;</span>).fit(treino.to_frame())</span>
+<span id="cb29-4"><a href aria-label="4"></a>imp <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;mean&quot;</span>).fit(train.to_frame())</span>
 <span id="cb29-5"><a href aria-label="5"></a><span class="bu">print</span>(<span class="st">&quot;média do treino:&quot;</span>, imp.statistics_.<span class="bu">round</span>(<span class="dv">3</span>))</span>
-<span id="cb29-6"><a href aria-label="6"></a><span class="bu">print</span>(<span class="st">&quot;média do teste: &quot;</span>, <span class="bu">round</span>(teste.mean(), <span class="dv">3</span>))</span>
-<span id="cb29-7"><a href aria-label="7"></a><span class="bu">print</span>(<span class="st">&quot;teste imputado: &quot;</span>, imp.transform(teste.to_frame()).ravel().<span class="bu">round</span>(<span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb29-6"><a href aria-label="6"></a><span class="bu">print</span>(<span class="st">&quot;média do teste: &quot;</span>, <span class="bu">round</span>(test.mean(), <span class="dv">3</span>))</span>
+<span id="cb29-7"><a href aria-label="7"></a><span class="bu">print</span>(<span class="st">&quot;teste imputado: &quot;</span>, imp.transform(test.to_frame()).ravel().<span class="bu">round</span>(<span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>média do treino: [1.738]
 média do teste:  1.95
@@ -1672,12 +1672,12 @@ teste imputado:  [1.9   2.    1.738]</code></pre>
 <ul>
 <li>A média é sensível a <em>outliers</em>; a mediana, não.</li>
 </ul>
-<div id="d37d9b93" class="cell" data-execution_count="23">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href aria-label="1"></a>alturas_erro <span class="op">=</span> pd.Series([<span class="fl">1.70</span>, np.nan, <span class="fl">1.85</span>, <span class="fl">1.62</span>, <span class="fl">19.0</span>, <span class="fl">1.78</span>])</span>
+<div id="d163322b" class="cell" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href aria-label="1"></a>heights_error <span class="op">=</span> pd.Series([<span class="fl">1.70</span>, np.nan, <span class="fl">1.85</span>, <span class="fl">1.62</span>, <span class="fl">19.0</span>, <span class="fl">1.78</span>])</span>
 <span id="cb31-2"><a href aria-label="2"></a></span>
-<span id="cb31-3"><a href aria-label="3"></a><span class="cf">for</span> estrategia <span class="kw">in</span> [<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;median&quot;</span>]:</span>
-<span id="cb31-4"><a href aria-label="4"></a>    imp <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span>estrategia).fit(alturas_erro.to_frame())</span>
-<span id="cb31-5"><a href aria-label="5"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>estrategia<span class="sc">:&gt;6}</span><span class="ss">: estatística = </span><span class="sc">{</span>imp<span class="sc">.</span>statistics_[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb31-3"><a href aria-label="3"></a><span class="cf">for</span> strategy <span class="kw">in</span> [<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;median&quot;</span>]:</span>
+<span id="cb31-4"><a href aria-label="4"></a>    imp <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span>strategy).fit(heights_error.to_frame())</span>
+<span id="cb31-5"><a href aria-label="5"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>strategy<span class="sc">:&gt;6}</span><span class="ss">: estatística = </span><span class="sc">{</span>imp<span class="sc">.</span>statistics_[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  mean: estatística = 5.19
 median: estatística = 1.78</code></pre>
@@ -1692,16 +1692,16 @@ median: estatística = 1.78</code></pre>
 <ul>
 <li><code>mean</code> e <code>median</code> só funcionam com números. Para <strong>texto</strong>, a estratégia é a moda:</li>
 </ul>
-<div id="b2d24fd3" class="cell" data-execution_count="24">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href aria-label="1"></a>planos <span class="op">=</span> pd.Series(</span>
+<div id="6bb6ef6f" class="cell" data-execution_count="24">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href aria-label="1"></a>plans <span class="op">=</span> pd.Series(</span>
 <span id="cb33-2"><a href aria-label="2"></a>  [<span class="st">&quot;basico&quot;</span>, <span class="st">&quot;premium&quot;</span>, <span class="va">None</span>, <span class="st">&quot;basico&quot;</span>, <span class="st">&quot;basico&quot;</span>, <span class="va">None</span>, <span class="st">&quot;premium&quot;</span>]</span>
 <span id="cb33-3"><a href aria-label="3"></a>  )</span>
 <span id="cb33-4"><a href aria-label="4"></a></span>
-<span id="cb33-5"><a href aria-label="5"></a>imp_moda <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;most_frequent&quot;</span>)</span>
-<span id="cb33-6"><a href aria-label="6"></a>resultado <span class="op">=</span> imp_moda.fit_transform(planos.to_frame())</span>
+<span id="cb33-5"><a href aria-label="5"></a>imp_mode <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;most_frequent&quot;</span>)</span>
+<span id="cb33-6"><a href aria-label="6"></a>result <span class="op">=</span> imp_mode.fit_transform(plans.to_frame())</span>
 <span id="cb33-7"><a href aria-label="7"></a></span>
-<span id="cb33-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="st">&quot;moda aprendida:&quot;</span>, imp_moda.statistics_)</span>
-<span id="cb33-9"><a href aria-label="9"></a><span class="bu">print</span>(pd.Series(resultado.ravel(), index<span class="op">=</span>planos.index).to_numpy())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb33-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="st">&quot;moda aprendida:&quot;</span>, imp_mode.statistics_)</span>
+<span id="cb33-9"><a href aria-label="9"></a><span class="bu">print</span>(pd.Series(result.ravel(), index<span class="op">=</span>plans.index).to_numpy())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>moda aprendida: [&#39;basico&#39;]
 [&#39;basico&#39; &#39;premium&#39; &#39;basico&#39; &#39;basico&#39; &#39;basico&#39; &#39;basico&#39; &#39;premium&#39;]</code></pre>
@@ -1713,9 +1713,9 @@ median: estatística = 1.78</code></pre>
 </section>
 <section id="add_indicatortrue" class="slide level2">
 <h2><code>add_indicator=True</code></h2>
-<div id="b41f1646" class="cell" data-execution_count="25">
+<div id="9268c431" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href aria-label="1"></a>imp <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;mean&quot;</span>, add_indicator<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb35-2"><a href aria-label="2"></a><span class="bu">print</span>(imp.fit_transform(alturas.to_frame()).<span class="bu">round</span>(<span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb35-2"><a href aria-label="2"></a><span class="bu">print</span>(imp.fit_transform(heights.to_frame()).<span class="bu">round</span>(<span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[1.7   0.   ]
  [1.738 1.   ]
@@ -1757,13 +1757,13 @@ median: estatística = 1.78</code></pre>
 </section>
 <section id="exemplo-com-knnimputer" class="slide level2">
 <h2>Exemplo com KNNImputer</h2>
-<div id="e95a741c" class="cell" data-execution_count="26">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href aria-label="1"></a>pessoas <span class="op">=</span> pd.DataFrame({</span>
+<div id="eabbf597" class="cell" data-execution_count="26">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href aria-label="1"></a>people <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb37-2"><a href aria-label="2"></a>    <span class="st">&quot;idade&quot;</span>: [<span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">25</span>, <span class="dv">26</span>, <span class="dv">44</span>, <span class="dv">23</span>],</span>
 <span id="cb37-3"><a href aria-label="3"></a>    <span class="st">&quot;patrimonio&quot;</span>: [<span class="dv">200_000</span>, <span class="dv">250_000</span>, <span class="dv">15_000</span>, <span class="dv">20_000</span>, <span class="dv">300_000</span>, <span class="dv">10_000</span>],</span>
 <span id="cb37-4"><a href aria-label="4"></a>    <span class="st">&quot;renda&quot;</span>: [<span class="dv">5500</span>, <span class="dv">7000</span>, <span class="dv">2200</span>, <span class="dv">2500</span>, np.nan, <span class="dv">2500</span>],</span>
 <span id="cb37-5"><a href aria-label="5"></a>}, index<span class="op">=</span>[<span class="st">&quot;Ana&quot;</span>, <span class="st">&quot;Bruno&quot;</span>, <span class="st">&quot;Carla&quot;</span>, <span class="st">&quot;Diego&quot;</span>, <span class="st">&quot;Elisa&quot;</span>, <span class="st">&quot;Fabio&quot;</span>])</span>
-<span id="cb37-6"><a href aria-label="6"></a><span class="bu">print</span>(pessoas)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb37-6"><a href aria-label="6"></a><span class="bu">print</span>(people)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       idade  patrimonio   renda
 Ana       40      200000  5500.0
@@ -1780,11 +1780,11 @@ Fabio     23       10000  2500.0</code></pre>
 </section>
 <section id="exemplo-com-knnimputer-1" class="slide level2">
 <h2>Exemplo com KNNImputer</h2>
-<div id="7f2d68c1" class="cell" data-execution_count="27">
+<div id="3b7e395d" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> KNNImputer</span>
 <span id="cb39-2"><a href aria-label="2"></a></span>
-<span id="cb39-3"><a href aria-label="3"></a>imputado <span class="op">=</span> KNNImputer(n_neighbors<span class="op">=</span><span class="dv">2</span>).fit_transform(pessoas)</span>
-<span id="cb39-4"><a href aria-label="4"></a><span class="bu">print</span>(pd.DataFrame(imputado, index<span class="op">=</span>pessoas.index, columns<span class="op">=</span>pessoas.columns))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb39-3"><a href aria-label="3"></a>imputed <span class="op">=</span> KNNImputer(n_neighbors<span class="op">=</span><span class="dv">2</span>).fit_transform(people)</span>
+<span id="cb39-4"><a href aria-label="4"></a><span class="bu">print</span>(pd.DataFrame(imputed, index<span class="op">=</span>people.index, columns<span class="op">=</span>people.columns))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       idade  patrimonio   renda
 Ana     40.0    200000.0  5500.0
@@ -1845,7 +1845,7 @@ Fabio   23.0     10000.0  2500.0</code></pre>
 <ul>
 <li>O <code>IterativeImputer</code> ainda é considerado experimental: sua API pode mudar sem aviso de depreciação. Por isso o sklearn exige uma importação explícita:</li>
 </ul>
-<div id="7f03e3b6" class="cell" data-execution_count="28">
+<div id="7fdd6e96" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.experimental <span class="im">import</span> enable_iterative_imputer   <span class="co"># obrigatório, antes</span></span>
 <span id="cb42-2"><a href aria-label="2"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> IterativeImputer</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -1855,19 +1855,19 @@ Fabio   23.0     10000.0  2500.0</code></pre>
 <ul>
 <li>Três colunas de um cadastro de imóveis, geradas com uma relação conhecida: <span class="math inline">\(\text{preco} \approx 3 \cdot \text{area} + 20 \cdot \text{quartos}\)</span>.</li>
 </ul>
-<div id="df695052" class="cell" data-execution_count="29">
+<div id="2651e790" class="cell" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href aria-label="1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7</span>)</span>
 <span id="cb43-2"><a href aria-label="2"></a>n <span class="op">=</span> <span class="dv">60</span></span>
 <span id="cb43-3"><a href aria-label="3"></a>area <span class="op">=</span> rng.uniform(<span class="dv">50</span>, <span class="dv">200</span>, n).<span class="bu">round</span>(<span class="dv">0</span>)</span>
-<span id="cb43-4"><a href aria-label="4"></a>quartos <span class="op">=</span> np.clip((area<span class="op">/</span><span class="dv">40</span> <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.3</span>, n)).<span class="bu">round</span>(<span class="dv">0</span>), <span class="dv">1</span>, <span class="dv">6</span>)</span>
-<span id="cb43-5"><a href aria-label="5"></a>preco <span class="op">=</span> (<span class="dv">3</span><span class="op">*</span>area <span class="op">+</span> <span class="dv">20</span><span class="op">*</span>quartos <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">4</span>, n)).<span class="bu">round</span>(<span class="dv">0</span>)</span>
+<span id="cb43-4"><a href aria-label="4"></a>rooms <span class="op">=</span> np.clip((area<span class="op">/</span><span class="dv">40</span> <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.3</span>, n)).<span class="bu">round</span>(<span class="dv">0</span>), <span class="dv">1</span>, <span class="dv">6</span>)</span>
+<span id="cb43-5"><a href aria-label="5"></a>price <span class="op">=</span> (<span class="dv">3</span><span class="op">*</span>area <span class="op">+</span> <span class="dv">20</span><span class="op">*</span>rooms <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">4</span>, n)).<span class="bu">round</span>(<span class="dv">0</span>)</span>
 <span id="cb43-6"><a href aria-label="6"></a></span>
-<span id="cb43-7"><a href aria-label="7"></a>imoveis <span class="op">=</span> pd.DataFrame({<span class="st">&quot;area&quot;</span>: area, <span class="st">&quot;quartos&quot;</span>: quartos, <span class="st">&quot;preco&quot;</span>: preco})</span>
+<span id="cb43-7"><a href aria-label="7"></a>properties <span class="op">=</span> pd.DataFrame({<span class="st">&quot;area&quot;</span>: area, <span class="st">&quot;quartos&quot;</span>: rooms, <span class="st">&quot;preco&quot;</span>: price})</span>
 <span id="cb43-8"><a href aria-label="8"></a></span>
-<span id="cb43-9"><a href aria-label="9"></a>com_buracos <span class="op">=</span> imoveis.copy()</span>
-<span id="cb43-10"><a href aria-label="10"></a>com_buracos.loc[[<span class="dv">3</span>, <span class="dv">11</span>], <span class="st">&quot;preco&quot;</span>] <span class="op">=</span> np.nan</span>
-<span id="cb43-11"><a href aria-label="11"></a>com_buracos.loc[[<span class="dv">5</span>, <span class="dv">20</span>], <span class="st">&quot;area&quot;</span>] <span class="op">=</span> np.nan</span>
-<span id="cb43-12"><a href aria-label="12"></a><span class="bu">print</span>(com_buracos.loc[[<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">11</span>, <span class="dv">20</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb43-9"><a href aria-label="9"></a>with_gaps <span class="op">=</span> properties.copy()</span>
+<span id="cb43-10"><a href aria-label="10"></a>with_gaps.loc[[<span class="dv">3</span>, <span class="dv">11</span>], <span class="st">&quot;preco&quot;</span>] <span class="op">=</span> np.nan</span>
+<span id="cb43-11"><a href aria-label="11"></a>with_gaps.loc[[<span class="dv">5</span>, <span class="dv">20</span>], <span class="st">&quot;area&quot;</span>] <span class="op">=</span> np.nan</span>
+<span id="cb43-12"><a href aria-label="12"></a><span class="bu">print</span>(with_gaps.loc[[<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">11</span>, <span class="dv">20</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    area  quartos  preco
 3   84.0      2.0    NaN
@@ -1879,20 +1879,20 @@ Fabio   23.0     10000.0  2500.0</code></pre>
 </section>
 <section id="a-imputação" class="slide level2">
 <h2>A imputação</h2>
-<div id="bcf9ee0e" class="cell" data-execution_count="30">
+<div id="3fbb6bd8" class="cell" data-execution_count="30">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href aria-label="1"></a>imp_iter <span class="op">=</span> IterativeImputer(max_iter<span class="op">=</span><span class="dv">10</span>, skip_complete<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb45-2"><a href aria-label="2"></a>resultado <span class="op">=</span> pd.DataFrame(imp_iter.fit_transform(com_buracos),</span>
-<span id="cb45-3"><a href aria-label="3"></a>                         columns<span class="op">=</span>imoveis.columns)</span>
+<span id="cb45-2"><a href aria-label="2"></a>result <span class="op">=</span> pd.DataFrame(imp_iter.fit_transform(with_gaps),</span>
+<span id="cb45-3"><a href aria-label="3"></a>                      columns<span class="op">=</span>properties.columns)</span>
 <span id="cb45-4"><a href aria-label="4"></a></span>
-<span id="cb45-5"><a href aria-label="5"></a>media <span class="op">=</span> pd.DataFrame(SimpleImputer().fit_transform(com_buracos),</span>
-<span id="cb45-6"><a href aria-label="6"></a>                     columns<span class="op">=</span>imoveis.columns)</span>
+<span id="cb45-5"><a href aria-label="5"></a>mean_imputed <span class="op">=</span> pd.DataFrame(SimpleImputer().fit_transform(with_gaps),</span>
+<span id="cb45-6"><a href aria-label="6"></a>                            columns<span class="op">=</span>properties.columns)</span>
 <span id="cb45-7"><a href aria-label="7"></a></span>
-<span id="cb45-8"><a href aria-label="8"></a>celulas <span class="op">=</span> [(<span class="dv">3</span>, <span class="st">&quot;preco&quot;</span>), (<span class="dv">5</span>, <span class="st">&quot;area&quot;</span>), (<span class="dv">11</span>, <span class="st">&quot;preco&quot;</span>), (<span class="dv">20</span>, <span class="st">&quot;area&quot;</span>)]</span>
+<span id="cb45-8"><a href aria-label="8"></a>cells <span class="op">=</span> [(<span class="dv">3</span>, <span class="st">&quot;preco&quot;</span>), (<span class="dv">5</span>, <span class="st">&quot;area&quot;</span>), (<span class="dv">11</span>, <span class="st">&quot;preco&quot;</span>), (<span class="dv">20</span>, <span class="st">&quot;area&quot;</span>)]</span>
 <span id="cb45-9"><a href aria-label="9"></a><span class="bu">print</span>(pd.DataFrame({</span>
-<span id="cb45-10"><a href aria-label="10"></a>    <span class="st">&quot;verdade&quot;</span>: [imoveis.loc[i, c] <span class="cf">for</span> i, c <span class="kw">in</span> celulas],</span>
-<span id="cb45-11"><a href aria-label="11"></a>    <span class="st">&quot;IterativeImputer&quot;</span>: [resultado.loc[i, c] <span class="cf">for</span> i, c <span class="kw">in</span> celulas],</span>
-<span id="cb45-12"><a href aria-label="12"></a>    <span class="st">&quot;SimpleImputer(mean)&quot;</span>: [media.loc[i, c] <span class="cf">for</span> i, c <span class="kw">in</span> celulas],</span>
-<span id="cb45-13"><a href aria-label="13"></a>}, index<span class="op">=</span>[<span class="ss">f&quot;</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">[</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">]&quot;</span> <span class="cf">for</span> i, c <span class="kw">in</span> celulas]).<span class="bu">round</span>(<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb45-10"><a href aria-label="10"></a>    <span class="st">&quot;verdade&quot;</span>: [properties.loc[i, c] <span class="cf">for</span> i, c <span class="kw">in</span> cells],</span>
+<span id="cb45-11"><a href aria-label="11"></a>    <span class="st">&quot;IterativeImputer&quot;</span>: [result.loc[i, c] <span class="cf">for</span> i, c <span class="kw">in</span> cells],</span>
+<span id="cb45-12"><a href aria-label="12"></a>    <span class="st">&quot;SimpleImputer(mean)&quot;</span>: [mean_imputed.loc[i, c] <span class="cf">for</span> i, c <span class="kw">in</span> cells],</span>
+<span id="cb45-13"><a href aria-label="13"></a>}, index<span class="op">=</span>[<span class="ss">f&quot;</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">[</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">]&quot;</span> <span class="cf">for</span> i, c <span class="kw">in</span> cells]).<span class="bu">round</span>(<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           verdade  IterativeImputer  SimpleImputer(mean)
 preco[3]     292.0             290.9                434.7
@@ -1904,7 +1904,7 @@ area[20]      82.0              80.9                123.2</code></pre>
 </section>
 <section id="por-que-o-iterativo-acerta" class="slide level2">
 <h2>Por que o iterativo acerta</h2>
-<div id="78002bb2" class="cell" data-execution_count="31">
+<div id="c6020706" class="cell" data-execution_count="31">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1924,7 +1924,7 @@ area[20]      82.0              80.9                123.2</code></pre>
 <li>O atributo guarda o <strong>histórico completo</strong> do processo: uma tupla nomeada por (coluna imputada <span class="math inline">\(\times\)</span> rodada), na ordem em que os modelos foram ajustados.</li>
 <li>Cada tupla <code>_ImputerTriplet</code> tem três campos: <code>feat_idx</code> (coluna alvo), <code>neighbor_feat_idx</code> (colunas preditoras) e <code>estimator</code> (o modelo já treinado).</li>
 </ul>
-<div id="0935ff28" class="cell" data-execution_count="32">
+<div id="d0838b83" class="cell" data-execution_count="32">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href aria-label="1"></a><span class="bu">print</span>(<span class="st">&quot;rodadas executadas:&quot;</span>, imp_iter.n_iter_)</span>
 <span id="cb47-2"><a href aria-label="2"></a><span class="bu">print</span>(<span class="st">&quot;modelos ajustados:&quot;</span>, <span class="bu">len</span>(imp_iter.imputation_sequence_))</span>
 <span id="cb47-3"><a href aria-label="3"></a><span class="bu">print</span>(imp_iter.imputation_sequence_[<span class="dv">0</span>]._fields)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1940,14 +1940,14 @@ modelos ajustados: 6
 </section>
 <section id="lendo-a-sequência" class="slide level2">
 <h2>Lendo a sequência</h2>
-<div id="0b9fd45c" class="cell" data-execution_count="33">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href aria-label="1"></a>colunas <span class="op">=</span> imoveis.columns</span>
+<div id="231c764e" class="cell" data-execution_count="33">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href aria-label="1"></a>columns <span class="op">=</span> properties.columns</span>
 <span id="cb49-2"><a href aria-label="2"></a></span>
-<span id="cb49-3"><a href aria-label="3"></a><span class="cf">for</span> i, passo <span class="kw">in</span> <span class="bu">enumerate</span>(imp_iter.imputation_sequence_):</span>
-<span id="cb49-4"><a href aria-label="4"></a>    alvo <span class="op">=</span> colunas[passo.feat_idx]</span>
-<span id="cb49-5"><a href aria-label="5"></a>    preditoras <span class="op">=</span> <span class="bu">list</span>(colunas[<span class="bu">list</span>(passo.neighbor_feat_idx)])</span>
-<span id="cb49-6"><a href aria-label="6"></a>    coefs <span class="op">=</span> passo.estimator.coef_.<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb49-7"><a href aria-label="7"></a>    <span class="bu">print</span>(<span class="ss">f&quot;rodada </span><span class="sc">{</span>i<span class="op">//</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>alvo<span class="sc">:&gt;5}</span><span class="ss"> &lt;- </span><span class="sc">{</span><span class="bu">str</span>(preditoras)<span class="sc">:&lt;22}</span><span class="ss"> coef = </span><span class="sc">{</span>coefs<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb49-3"><a href aria-label="3"></a><span class="cf">for</span> i, step <span class="kw">in</span> <span class="bu">enumerate</span>(imp_iter.imputation_sequence_):</span>
+<span id="cb49-4"><a href aria-label="4"></a>    target <span class="op">=</span> columns[step.feat_idx]</span>
+<span id="cb49-5"><a href aria-label="5"></a>    predictors <span class="op">=</span> <span class="bu">list</span>(columns[<span class="bu">list</span>(step.neighbor_feat_idx)])</span>
+<span id="cb49-6"><a href aria-label="6"></a>    coefs <span class="op">=</span> step.estimator.coef_.<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb49-7"><a href aria-label="7"></a>    <span class="bu">print</span>(<span class="ss">f&quot;rodada </span><span class="sc">{</span>i<span class="op">//</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>target<span class="sc">:&gt;5}</span><span class="ss"> &lt;- </span><span class="sc">{</span><span class="bu">str</span>(predictors)<span class="sc">:&lt;22}</span><span class="ss"> coef = </span><span class="sc">{</span>coefs<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>rodada 1:  area &lt;- [&#39;quartos&#39;, &#39;preco&#39;]   coef = [0.05 0.28]
 rodada 1: preco &lt;- [&#39;area&#39;, &#39;quartos&#39;]    coef = [ 3.03 19.24]
@@ -1977,15 +1977,15 @@ rodada 3: preco &lt;- [&#39;area&#39;, &#39;quartos&#39;]    coef = [ 2.98 20.91
 </section>
 <section id="exemplo-de-regressão-com-nan" class="slide level2">
 <h2>Exemplo de regressão com <code>NaN</code></h2>
-<div id="f7d3a5be" class="cell" data-execution_count="34">
+<div id="59d825df" class="cell" data-execution_count="34">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> HistGradientBoostingRegressor</span>
 <span id="cb51-2"><a href aria-label="2"></a></span>
-<span id="cb51-3"><a href aria-label="3"></a>X <span class="op">=</span> com_buracos[[<span class="st">&quot;area&quot;</span>, <span class="st">&quot;quartos&quot;</span>]]        <span class="co"># a coluna &#39;area&#39; tem ausentes</span></span>
-<span id="cb51-4"><a href aria-label="4"></a>y <span class="op">=</span> imoveis[<span class="st">&quot;preco&quot;</span>]</span>
+<span id="cb51-3"><a href aria-label="3"></a>X <span class="op">=</span> with_gaps[[<span class="st">&quot;area&quot;</span>, <span class="st">&quot;quartos&quot;</span>]]        <span class="co"># a coluna &#39;area&#39; tem ausentes</span></span>
+<span id="cb51-4"><a href aria-label="4"></a>y <span class="op">=</span> properties[<span class="st">&quot;preco&quot;</span>]</span>
 <span id="cb51-5"><a href aria-label="5"></a></span>
-<span id="cb51-6"><a href aria-label="6"></a>modelo <span class="op">=</span> HistGradientBoostingRegressor(random_state<span class="op">=</span><span class="dv">0</span>).fit(X, y)</span>
-<span id="cb51-7"><a href aria-label="7"></a>nova <span class="op">=</span> pd.DataFrame({<span class="st">&quot;area&quot;</span>: [np.nan], <span class="st">&quot;quartos&quot;</span>: [<span class="fl">3.0</span>]})</span>
-<span id="cb51-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="st">&quot;HistGradientBoosting previu:&quot;</span>, modelo.predict(nova).<span class="bu">round</span>(<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb51-6"><a href aria-label="6"></a>model <span class="op">=</span> HistGradientBoostingRegressor(random_state<span class="op">=</span><span class="dv">0</span>).fit(X, y)</span>
+<span id="cb51-7"><a href aria-label="7"></a>new_sample <span class="op">=</span> pd.DataFrame({<span class="st">&quot;area&quot;</span>: [np.nan], <span class="st">&quot;quartos&quot;</span>: [<span class="fl">3.0</span>]})</span>
+<span id="cb51-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="st">&quot;HistGradientBoosting previu:&quot;</span>, model.predict(new_sample).<span class="bu">round</span>(<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>HistGradientBoosting previu: [403.7]</code></pre>
 </div>
@@ -2001,20 +2001,20 @@ rodada 3: preco &lt;- [&#39;area&#39;, &#39;quartos&#39;]    coef = [ 2.98 20.91
 <section id="um-imputador-por-tipo-de-coluna-1" class="slide level2">
 <h2>Um imputador por tipo de coluna</h2>
 <p>Exemplo</p>
-<div id="54468e6e" class="cell" data-execution_count="35">
+<div id="e3de48cb" class="cell" data-execution_count="35">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
 <span id="cb53-2"><a href aria-label="2"></a></span>
-<span id="cb53-3"><a href aria-label="3"></a>cadastro <span class="op">=</span> pd.DataFrame({<span class="st">&quot;idade&quot;</span>: [<span class="fl">30.0</span>, np.nan, <span class="fl">45.0</span>],</span>
-<span id="cb53-4"><a href aria-label="4"></a>                         <span class="st">&quot;cidade&quot;</span>: [<span class="st">&quot;SP&quot;</span>, <span class="va">None</span>, <span class="st">&quot;RJ&quot;</span>]})</span>
+<span id="cb53-3"><a href aria-label="3"></a>records <span class="op">=</span> pd.DataFrame({<span class="st">&quot;idade&quot;</span>: [<span class="fl">30.0</span>, np.nan, <span class="fl">45.0</span>],</span>
+<span id="cb53-4"><a href aria-label="4"></a>                        <span class="st">&quot;cidade&quot;</span>: [<span class="st">&quot;SP&quot;</span>, <span class="va">None</span>, <span class="st">&quot;RJ&quot;</span>]})</span>
 <span id="cb53-5"><a href aria-label="5"></a></span>
 <span id="cb53-6"><a href aria-label="6"></a><span class="co"># num e cat são nomes das transformações, usados para identificar as colunas de saída</span></span>
-<span id="cb53-7"><a href aria-label="7"></a>pre_processamento <span class="op">=</span> ColumnTransformer([</span>
+<span id="cb53-7"><a href aria-label="7"></a>preprocessing <span class="op">=</span> ColumnTransformer([</span>
 <span id="cb53-8"><a href aria-label="8"></a>    (<span class="st">&quot;num&quot;</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;median&quot;</span>, add_indicator<span class="op">=</span><span class="va">True</span>), [<span class="st">&quot;idade&quot;</span>]),</span>
 <span id="cb53-9"><a href aria-label="9"></a>    (<span class="st">&quot;cat&quot;</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">&quot;most_frequent&quot;</span>), [<span class="st">&quot;cidade&quot;</span>]),</span>
 <span id="cb53-10"><a href aria-label="10"></a>])</span>
 <span id="cb53-11"><a href aria-label="11"></a></span>
-<span id="cb53-12"><a href aria-label="12"></a><span class="bu">print</span>(pre_processamento.fit_transform(cadastro))</span>
-<span id="cb53-13"><a href aria-label="13"></a><span class="bu">print</span>(pre_processamento.get_feature_names_out())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb53-12"><a href aria-label="12"></a><span class="bu">print</span>(preprocessing.fit_transform(records))</span>
+<span id="cb53-13"><a href aria-label="13"></a><span class="bu">print</span>(preprocessing.get_feature_names_out())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[30.0 0.0 &#39;SP&#39;]
  [37.5 1.0 &#39;RJ&#39;]

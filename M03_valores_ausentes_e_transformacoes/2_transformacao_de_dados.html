@@ -1069,11 +1069,11 @@ Prof. Cesar Henrique Comin
 </section>
 <section id="colunas-possuem-escalas-diferentes" class="slide level2">
 <h2>Colunas possuem escalas diferentes</h2>
-<div id="d7a23f1a" class="cell" data-execution_count="2">
+<div id="56a9868c" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href aria-label="1"></a>diabetes <span class="op">=</span> pd.read_csv(<span class="st">&quot;../data/diabetic_data.csv&quot;</span>, na_values<span class="op">=</span><span class="st">&quot;?&quot;</span>)</span>
 <span id="cb1-2"><a href aria-label="2"></a></span>
-<span id="cb1-3"><a href aria-label="3"></a>colunas <span class="op">=</span> [<span class="st">&quot;time_in_hospital&quot;</span>, <span class="st">&quot;num_lab_procedures&quot;</span>, <span class="st">&quot;num_medications&quot;</span>]</span>
-<span id="cb1-4"><a href aria-label="4"></a><span class="bu">print</span>(diabetes[colunas].describe().loc[[<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;std&quot;</span>, <span class="st">&quot;min&quot;</span>, <span class="st">&quot;max&quot;</span>]].<span class="bu">round</span>(<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href aria-label="3"></a>columns <span class="op">=</span> [<span class="st">&quot;time_in_hospital&quot;</span>, <span class="st">&quot;num_lab_procedures&quot;</span>, <span class="st">&quot;num_medications&quot;</span>]</span>
+<span id="cb1-4"><a href aria-label="4"></a><span class="bu">print</span>(diabetes[columns].describe().loc[[<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;std&quot;</span>, <span class="st">&quot;min&quot;</span>, <span class="st">&quot;max&quot;</span>]].<span class="bu">round</span>(<span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      time_in_hospital  num_lab_procedures  num_medications
 mean               4.7                46.6             14.9
@@ -1127,15 +1127,15 @@ max               14.0               114.0             62.0</code></pre>
 </section>
 <section id="exemplo-do-minmaxscaler" class="slide level2">
 <h2>Exemplo do <code>MinMaxScaler</code></h2>
-<div id="3b5babc7" class="cell" data-execution_count="3">
+<div id="01ace1e0" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> MinMaxScaler</span>
 <span id="cb3-2"><a href aria-label="2"></a></span>
-<span id="cb3-3"><a href aria-label="3"></a>treino <span class="op">=</span> pd.DataFrame({<span class="st">&quot;nota&quot;</span>: [<span class="fl">5.0</span>, <span class="fl">7.0</span>, <span class="fl">9.0</span>]})</span>
-<span id="cb3-4"><a href aria-label="4"></a>teste <span class="op">=</span> pd.DataFrame({<span class="st">&quot;nota&quot;</span>: [<span class="fl">4.0</span>, <span class="fl">10.0</span>]})</span>
+<span id="cb3-3"><a href aria-label="3"></a>train <span class="op">=</span> pd.DataFrame({<span class="st">&quot;nota&quot;</span>: [<span class="fl">5.0</span>, <span class="fl">7.0</span>, <span class="fl">9.0</span>]})</span>
+<span id="cb3-4"><a href aria-label="4"></a>test <span class="op">=</span> pd.DataFrame({<span class="st">&quot;nota&quot;</span>: [<span class="fl">4.0</span>, <span class="fl">10.0</span>]})</span>
 <span id="cb3-5"><a href aria-label="5"></a></span>
-<span id="cb3-6"><a href aria-label="6"></a>mm <span class="op">=</span> MinMaxScaler().fit(treino)          </span>
+<span id="cb3-6"><a href aria-label="6"></a>mm <span class="op">=</span> MinMaxScaler().fit(train)          </span>
 <span id="cb3-7"><a href aria-label="7"></a><span class="bu">print</span>(<span class="st">&quot;data_min_:&quot;</span>, mm.data_min_, <span class="st">&quot;| data_max_:&quot;</span>, mm.data_max_)</span>
-<span id="cb3-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="st">&quot;teste [4, 10]:&quot;</span>, mm.transform(teste).ravel())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="st">&quot;teste [4, 10]:&quot;</span>, mm.transform(test).ravel())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>data_min_: [5.] | data_max_: [9.]
 teste [4, 10]: [-0.25  1.25]</code></pre>
@@ -1170,22 +1170,22 @@ teste [4, 10]: [-0.25  1.25]</code></pre>
 </section>
 <section id="o-efeito-de-outliers" class="slide level2">
 <h2>O efeito de outliers</h2>
-<div id="82cf7ce2" class="cell" data-execution_count="4">
+<div id="a2652ed5" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler, RobustScaler</span>
 <span id="cb5-2"><a href aria-label="2"></a></span>
 <span id="cb5-3"><a href aria-label="3"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
 <span id="cb5-4"><a href aria-label="4"></a></span>
-<span id="cb5-5"><a href aria-label="5"></a>valores <span class="op">=</span> np.concatenate(</span>
+<span id="cb5-5"><a href aria-label="5"></a>values <span class="op">=</span> np.concatenate(</span>
 <span id="cb5-6"><a href aria-label="6"></a>  [rng.normal(<span class="dv">50</span>, <span class="dv">10</span>, <span class="dv">990</span>),     <span class="co"># 990 leituras normais</span></span>
 <span id="cb5-7"><a href aria-label="7"></a>  rng.normal(<span class="dv">5000</span>, <span class="dv">100</span>, <span class="dv">10</span>)])   <span class="co"># 10 leituras anormais</span></span>
-<span id="cb5-8"><a href aria-label="8"></a>X <span class="op">=</span> pd.DataFrame({<span class="st">&quot;leitura&quot;</span>: valores})</span>
+<span id="cb5-8"><a href aria-label="8"></a>X <span class="op">=</span> pd.DataFrame({<span class="st">&quot;leitura&quot;</span>: values})</span>
 <span id="cb5-9"><a href aria-label="9"></a></span>
-<span id="cb5-10"><a href aria-label="10"></a><span class="cf">for</span> nome, escalador <span class="kw">in</span> [(<span class="st">&quot;MinMax&quot;</span>, MinMaxScaler()), </span>
-<span id="cb5-11"><a href aria-label="11"></a>                        (<span class="st">&quot;Standard&quot;</span>, StandardScaler()),</span>
-<span id="cb5-12"><a href aria-label="12"></a>                        (<span class="st">&quot;Robust&quot;</span>, RobustScaler())]:</span>
-<span id="cb5-13"><a href aria-label="13"></a>    saida <span class="op">=</span> escalador.fit_transform(X).ravel()</span>
-<span id="cb5-14"><a href aria-label="14"></a>    p1, p99 <span class="op">=</span> np.percentile(saida[:<span class="dv">990</span>], [<span class="dv">1</span>, <span class="dv">99</span>])       <span class="co"># onde ficaram os dados normais</span></span>
-<span id="cb5-15"><a href aria-label="15"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>nome<span class="sc">:&gt;9}</span><span class="ss">: 98% dos dados normais ocupam a faixa [</span><span class="sc">{</span>p1<span class="sc">:7.3f}</span><span class="ss">, </span><span class="sc">{</span>p99<span class="sc">:6.3f}</span><span class="ss">]&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-10"><a href aria-label="10"></a><span class="cf">for</span> name, scaler <span class="kw">in</span> [(<span class="st">&quot;MinMax&quot;</span>, MinMaxScaler()),</span>
+<span id="cb5-11"><a href aria-label="11"></a>                     (<span class="st">&quot;Standard&quot;</span>, StandardScaler()),</span>
+<span id="cb5-12"><a href aria-label="12"></a>                     (<span class="st">&quot;Robust&quot;</span>, RobustScaler())]:</span>
+<span id="cb5-13"><a href aria-label="13"></a>    output <span class="op">=</span> scaler.fit_transform(X).ravel()</span>
+<span id="cb5-14"><a href aria-label="14"></a>    p1, p99 <span class="op">=</span> np.percentile(output[:<span class="dv">990</span>], [<span class="dv">1</span>, <span class="dv">99</span>])       <span class="co"># onde ficaram os dados normais</span></span>
+<span id="cb5-15"><a href aria-label="15"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>name<span class="sc">:&gt;9}</span><span class="ss">: 98% dos dados normais ocupam a faixa [</span><span class="sc">{</span>p1<span class="sc">:7.3f}</span><span class="ss">, </span><span class="sc">{</span>p99<span class="sc">:6.3f}</span><span class="ss">]&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   MinMax: 98% dos dados normais ocupam a faixa [  0.003,  0.012]
  Standard: 98% dos dados normais ocupam a faixa [ -0.149, -0.054]
@@ -1195,7 +1195,7 @@ teste [4, 10]: [-0.25  1.25]</code></pre>
 </section>
 <section id="o-efeito-de-outliers-1" class="slide level2">
 <h2>O efeito de outliers</h2>
-<div id="905e83ed" class="cell" data-execution_count="5">
+<div id="d1c92da8" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1220,14 +1220,14 @@ teste [4, 10]: [-0.25  1.25]</code></pre>
 <li>Por padrão os transformadores devolvem um <code>array</code> do numpy e os nomes das colunas se perdem.</li>
 <li><code>set_output(transform=&quot;pandas&quot;)</code> mantém o DataFrame como saída do transformador do sklearn.</li>
 </ul>
-<div id="99bf4cfa" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href aria-label="1"></a>cadastro <span class="op">=</span> pd.DataFrame({</span>
+<div id="1097cd01" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href aria-label="1"></a>records <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-2"><a href aria-label="2"></a>    <span class="st">&quot;idade&quot;</span>: [<span class="dv">25</span>, <span class="dv">60</span>, <span class="dv">26</span>, <span class="dv">41</span>, <span class="dv">33</span>, <span class="dv">52</span>],</span>
 <span id="cb7-3"><a href aria-label="3"></a>    <span class="st">&quot;renda&quot;</span>: [<span class="fl">3000.0</span>, <span class="fl">3100.0</span>, <span class="fl">8000.0</span>, <span class="fl">5200.0</span>, <span class="fl">4100.0</span>, <span class="fl">12000.0</span>],</span>
 <span id="cb7-4"><a href aria-label="4"></a>}, index<span class="op">=</span>[<span class="st">&quot;Ana&quot;</span>, <span class="st">&quot;Bruno&quot;</span>, <span class="st">&quot;Carla&quot;</span>, <span class="st">&quot;Diego&quot;</span>, <span class="st">&quot;Elisa&quot;</span>, <span class="st">&quot;Fabio&quot;</span>])</span>
 <span id="cb7-5"><a href aria-label="5"></a></span>
-<span id="cb7-6"><a href aria-label="6"></a>escalador <span class="op">=</span> StandardScaler().set_output(transform<span class="op">=</span><span class="st">&quot;pandas&quot;</span>)</span>
-<span id="cb7-7"><a href aria-label="7"></a><span class="bu">print</span>(escalador.fit_transform(cadastro).<span class="bu">round</span>(<span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-6"><a href aria-label="6"></a>scaler <span class="op">=</span> StandardScaler().set_output(transform<span class="op">=</span><span class="st">&quot;pandas&quot;</span>)</span>
+<span id="cb7-7"><a href aria-label="7"></a><span class="bu">print</span>(scaler.fit_transform(records).<span class="bu">round</span>(<span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       idade  renda
 Ana    -1.12  -0.91
@@ -1295,7 +1295,7 @@ Fabio   0.96   1.90</code></pre>
 <li>Uma distribuição é <strong>assimétrica à direita</strong> quando poucos valores muito grandes puxam a <em>cauda</em> da distribuição.</li>
 <li>Indicativo: a <strong>média é maior que a mediana</strong>.</li>
 </ul>
-<div id="ea9af891" class="cell" data-execution_count="7">
+<div id="84d66ed4" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href aria-label="1"></a>x <span class="op">=</span> diabetes[<span class="st">&quot;num_medications&quot;</span>]</span>
 <span id="cb9-2"><a href aria-label="2"></a><span class="bu">print</span>(<span class="ss">f&quot;média: </span><span class="sc">{</span>x<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss"> | mediana: </span><span class="sc">{</span>x<span class="sc">.</span>median()<span class="sc">:.1f}</span><span class="ss"> | skew: </span><span class="sc">{</span>x<span class="sc">.</span>skew()<span class="sc">:.2f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -1317,7 +1317,7 @@ Fabio   0.96   1.90</code></pre>
 <li>O gráfico <strong>quantil-quantil</strong> mostra o quanto uma distribuição se afasta de uma referência. Em geral, a referência é a distribuição normal.</li>
 <li>Cada ponto é um quantil dos dados contra o quantil correspondente da normal. Se a distribuição fosse normal, os pontos cairiam sobre uma reta.</li>
 </ul>
-<div id="005bdc27" class="cell" data-execution_count="8">
+<div id="cd004ebb" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1350,14 +1350,14 @@ Fabio   0.96   1.90</code></pre>
 <li>Uma pesquisa registra a renda mensal de 400 famílias e uma nota de satisfação com a vida (0 a 10).</li>
 <li>A renda tem cauda longa. A satisfação cresce com o <strong>logaritmo</strong> da renda: dobrar a renda de quem ganha pouco muda muito mais do que dobrar a renda de quem já ganha muito.</li>
 </ul>
-<div id="f3985d89" class="cell" data-execution_count="9">
+<div id="2734452e" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href aria-label="1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">1</span>)</span>
 <span id="cb12-2"><a href aria-label="2"></a></span>
-<span id="cb12-3"><a href aria-label="3"></a>renda <span class="op">=</span> rng.lognormal(np.log(<span class="dv">3000</span>), <span class="fl">1.0</span>, <span class="dv">400</span>)                  <span class="co"># R$ por mês</span></span>
-<span id="cb12-4"><a href aria-label="4"></a>satisfacao <span class="op">=</span> <span class="fl">1.2</span><span class="op">*</span>np.log(renda) <span class="op">-</span> <span class="dv">4</span> <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.4</span>, <span class="dv">400</span>)   <span class="co"># depende de log(renda)</span></span>
+<span id="cb12-3"><a href aria-label="3"></a>income <span class="op">=</span> rng.lognormal(np.log(<span class="dv">3000</span>), <span class="fl">1.0</span>, <span class="dv">400</span>)                   <span class="co"># R$ por mês</span></span>
+<span id="cb12-4"><a href aria-label="4"></a>satisfaction <span class="op">=</span> <span class="fl">1.2</span><span class="op">*</span>np.log(income) <span class="op">-</span> <span class="dv">4</span> <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.4</span>, <span class="dv">400</span>)  <span class="co"># depende do log da renda</span></span>
 <span id="cb12-5"><a href aria-label="5"></a></span>
-<span id="cb12-6"><a href aria-label="6"></a>pesquisa <span class="op">=</span> pd.DataFrame({<span class="st">&quot;renda&quot;</span>: renda.<span class="bu">round</span>(<span class="dv">0</span>), <span class="st">&quot;satisfacao&quot;</span>: satisfacao.<span class="bu">round</span>(<span class="dv">2</span>)})</span>
-<span id="cb12-7"><a href aria-label="7"></a><span class="bu">print</span>(<span class="ss">f&quot;skew da renda: </span><span class="sc">{</span>pesquisa[<span class="st">&#39;renda&#39;</span>]<span class="sc">.</span>skew()<span class="sc">:.2f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-6"><a href aria-label="6"></a>survey <span class="op">=</span> pd.DataFrame({<span class="st">&quot;renda&quot;</span>: income.<span class="bu">round</span>(<span class="dv">0</span>), <span class="st">&quot;satisfacao&quot;</span>: satisfaction.<span class="bu">round</span>(<span class="dv">2</span>)})</span>
+<span id="cb12-7"><a href aria-label="7"></a><span class="bu">print</span>(<span class="ss">f&quot;skew da renda: </span><span class="sc">{</span>survey[<span class="st">&#39;renda&#39;</span>]<span class="sc">.</span>skew()<span class="sc">:.2f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>skew da renda: 5.87</code></pre>
 </div>
@@ -1365,19 +1365,19 @@ Fabio   0.96   1.90</code></pre>
 </section>
 <section id="regressão-linear-na-escala-original" class="slide level2">
 <h2>Regressão linear na escala original</h2>
-<div id="19d6843f" class="cell" data-execution_count="10">
+<div id="ab260582" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
 <span id="cb14-2"><a href aria-label="2"></a></span>
-<span id="cb14-3"><a href aria-label="3"></a>X <span class="op">=</span> pesquisa[[<span class="st">&quot;renda&quot;</span>]]</span>
-<span id="cb14-4"><a href aria-label="4"></a>y <span class="op">=</span> pesquisa[<span class="st">&quot;satisfacao&quot;</span>]</span>
+<span id="cb14-3"><a href aria-label="3"></a>X <span class="op">=</span> survey[[<span class="st">&quot;renda&quot;</span>]]</span>
+<span id="cb14-4"><a href aria-label="4"></a>y <span class="op">=</span> survey[<span class="st">&quot;satisfacao&quot;</span>]</span>
 <span id="cb14-5"><a href aria-label="5"></a></span>
-<span id="cb14-6"><a href aria-label="6"></a>modelo <span class="op">=</span> LinearRegression().fit(X, y)</span>
-<span id="cb14-7"><a href aria-label="7"></a><span class="bu">print</span>(<span class="ss">f&quot;R²: </span><span class="sc">{</span>modelo<span class="sc">.</span>score(X, y)<span class="sc">:.2f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-6"><a href aria-label="6"></a>model <span class="op">=</span> LinearRegression().fit(X, y)</span>
+<span id="cb14-7"><a href aria-label="7"></a><span class="bu">print</span>(<span class="ss">f&quot;R²: </span><span class="sc">{</span>model<span class="sc">.</span>score(X, y)<span class="sc">:.2f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R²: 0.48</code></pre>
 </div>
 </div>
-<div id="dfdad3aa" class="cell" data-execution_count="11">
+<div id="06f3b333" class="cell" data-execution_count="11">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1405,7 +1405,7 @@ Fabio   0.96   1.90</code></pre>
 </section>
 <section id="log1p-pode-inverter-a-cauda" class="slide level2">
 <h2><code>log1p</code> pode “inverter” a cauda</h2>
-<div id="51c35ca4" class="cell" data-execution_count="12">
+<div id="3fcbfe32" class="cell" data-execution_count="12">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1432,16 +1432,16 @@ Fabio   0.96   1.90</code></pre>
 <li>Box-Cox não aceita zero nem valores negativos.</li>
 <li><strong>Yeo-Johnson</strong> estende o Box-Cox para incluir valores zero e negativos.</li>
 </ul>
-<div id="056e0a3a" class="cell" data-execution_count="13">
+<div id="ed211ff3" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> PowerTransformer</span>
 <span id="cb16-2"><a href aria-label="2"></a></span>
 <span id="cb16-3"><a href aria-label="3"></a>X_med <span class="op">=</span> diabetes[<span class="st">&quot;num_medications&quot;</span>].to_frame()</span>
 <span id="cb16-4"><a href aria-label="4"></a>yj <span class="op">=</span> PowerTransformer().fit(X_med)                       <span class="co"># yeo-johnson</span></span>
 <span id="cb16-5"><a href aria-label="5"></a>bc <span class="op">=</span> PowerTransformer(method<span class="op">=</span><span class="st">&quot;box-cox&quot;</span>).fit(X_med)</span>
 <span id="cb16-6"><a href aria-label="6"></a></span>
-<span id="cb16-7"><a href aria-label="7"></a><span class="cf">for</span> nome, trans <span class="kw">in</span> [(<span class="st">&quot;Yeo-Johnson&quot;</span>, yj), (<span class="st">&quot;Box-Cox&quot;</span>, bc)]:</span>
-<span id="cb16-8"><a href aria-label="8"></a>    skew <span class="op">=</span> pd.Series(trans.transform(X_med).ravel()).skew()</span>
-<span id="cb16-9"><a href aria-label="9"></a>    <span class="bu">print</span>(<span class="ss">f&quot;skew </span><span class="sc">{</span>nome<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>skew<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-7"><a href aria-label="7"></a><span class="cf">for</span> name, transformer <span class="kw">in</span> [(<span class="st">&quot;Yeo-Johnson&quot;</span>, yj), (<span class="st">&quot;Box-Cox&quot;</span>, bc)]:</span>
+<span id="cb16-8"><a href aria-label="8"></a>    skew <span class="op">=</span> pd.Series(transformer.transform(X_med).ravel()).skew()</span>
+<span id="cb16-9"><a href aria-label="9"></a>    <span class="bu">print</span>(<span class="ss">f&quot;skew </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>skew<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>skew Yeo-Johnson: 0.012
 skew Box-Cox: 0.025</code></pre>
@@ -1450,22 +1450,22 @@ skew Box-Cox: 0.025</code></pre>
 </section>
 <section id="voltando-à-regressão-linear" class="slide level2">
 <h2>Voltando à regressão linear</h2>
-<div id="e5b84809" class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href aria-label="1"></a>X <span class="op">=</span> pesquisa[[<span class="st">&quot;renda&quot;</span>]]</span>
-<span id="cb18-2"><a href aria-label="2"></a>y <span class="op">=</span> pesquisa[<span class="st">&quot;satisfacao&quot;</span>]</span>
+<div id="2d0568cc" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href aria-label="1"></a>X <span class="op">=</span> survey[[<span class="st">&quot;renda&quot;</span>]]</span>
+<span id="cb18-2"><a href aria-label="2"></a>y <span class="op">=</span> survey[<span class="st">&quot;satisfacao&quot;</span>]</span>
 <span id="cb18-3"><a href aria-label="3"></a></span>
 <span id="cb18-4"><a href aria-label="4"></a>pt <span class="op">=</span> PowerTransformer().fit(X)                   <span class="co"># yeo-johnson na renda</span></span>
 <span id="cb18-5"><a href aria-label="5"></a>X_pt <span class="op">=</span> pt.transform(X)</span>
 <span id="cb18-6"><a href aria-label="6"></a></span>
-<span id="cb18-7"><a href aria-label="7"></a>modelo_pt <span class="op">=</span> LinearRegression().fit(X_pt, y)</span>
+<span id="cb18-7"><a href aria-label="7"></a>model_pt <span class="op">=</span> LinearRegression().fit(X_pt, y)</span>
 <span id="cb18-8"><a href aria-label="8"></a><span class="bu">print</span>(<span class="ss">f&quot;lambda estimado: </span><span class="sc">{</span>pt<span class="sc">.</span>lambdas_[<span class="dv">0</span>]<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span>
-<span id="cb18-9"><a href aria-label="9"></a><span class="bu">print</span>(<span class="ss">f&quot;R² antes: </span><span class="sc">{</span>modelo<span class="sc">.</span>score(X, y)<span class="sc">:.3f}</span><span class="ss"> | R² depois: </span><span class="sc">{</span>modelo_pt<span class="sc">.</span>score(X_pt, y)<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb18-9"><a href aria-label="9"></a><span class="bu">print</span>(<span class="ss">f&quot;R² antes: </span><span class="sc">{</span>model<span class="sc">.</span>score(X, y)<span class="sc">:.3f}</span><span class="ss"> | R² depois: </span><span class="sc">{</span>model_pt<span class="sc">.</span>score(X_pt, y)<span class="sc">:.3f}</span><span class="ss">&quot;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>lambda estimado: -0.022
 R² antes: 0.481 | R² depois: 0.877</code></pre>
 </div>
 </div>
-<div id="9d8061c5" class="cell" data-execution_count="15">
+<div id="253e4463" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1489,7 +1489,7 @@ R² antes: 0.481 | R² depois: 0.877</code></pre>
 <li><code>output_distribution=&quot;uniform&quot;</code> (padrão) ou <code>&quot;normal&quot;</code>.</li>
 <li>É uma transformação de <strong>posto</strong>: só a ordem dos valores importa.</li>
 </ul>
-<div id="fc704b08" class="cell" data-execution_count="16">
+<div id="536e35f9" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href aria-label="1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> QuantileTransformer</span>
 <span id="cb20-2"><a href aria-label="2"></a></span>
 <span id="cb20-3"><a href aria-label="3"></a>qt <span class="op">=</span> QuantileTransformer(output_distribution<span class="op">=</span><span class="st">&quot;normal&quot;</span>, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_med)</span>
@@ -1501,7 +1501,7 @@ R² antes: 0.481 | R² depois: 0.877</code></pre>
 </section>
 <section id="quantiletransformer-comparação" class="slide level2">
 <h2><code>QuantileTransformer</code> — comparação</h2>
-<div id="b0cdf1ba" class="cell" data-execution_count="17">
+<div id="e031073a" class="cell" data-execution_count="17">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
