@@ -12,6 +12,9 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
 * M03 - Imputação de valores ausentes e transformação de dados
     * [Imputação de valores ausentes](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/1_imputacao_de_valores_ausentes.html)
     * [Escalonamento e transformação](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/2_transformacao_de_dados.html)
+    * [Discretização e codificação](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/3_discretizacao_e_codificacao.html)
+* M04 - Outliers e dados desbalanceados
+    * [Detecção de outliers](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M04_outliers_e_dados_desbalanceados/1_deteccao_de_outliers.html)
 
 ## Tópicos abordados
 
