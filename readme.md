@@ -15,6 +15,9 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
     * [Discretização e codificação](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/3_discretizacao_e_codificacao.html)
 * M04 - Outliers e dados desbalanceados
     * [Detecção de outliers](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M04_outliers_e_dados_desbalanceados/1_deteccao_de_outliers.html)
+* M05 - Engenharia e seleção de atributos
+    * [Engenharia de atributos](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M05_engenharia_e_selecao_de_atributos/1_engenharia_de_atributos.html)
+    * [Seleção de atributos](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M05_engenharia_e_selecao_de_atributos/2_selecao_de_atributos.html)
 
 ## Tópicos abordados
 
