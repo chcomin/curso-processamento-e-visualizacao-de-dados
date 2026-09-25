@@ -14,12 +14,14 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
     * [Imputação de valores ausentes](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/1_imputacao_de_valores_ausentes.html)
     * [Escalonamento e transformação](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/2_transformacao_de_dados.html)
     * [Discretização e codificação](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/3_discretizacao_e_codificacao.html)
+    * [Exemplo atividade 2](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M03_valores_ausentes_e_transformacoes/atividade_2/Analise%20Dados%20Diabetes.ipynb)
 * M04 - Outliers e dados desbalanceados
-    * [Detecção de outliers](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M04_outliers_e_dados_desbalanceados/1_deteccao_de_outliers.html)
-    * [Dados desbalanceados](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M04_outliers_e_dados_desbalanceados/2_dados_desbalanceados.html)
+    * [Detecção de outliers](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M04_outliers_e_dados_desbalanceados/1_deteccao_de_outliers.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M04_outliers_e_dados_desbalanceados/deteccao_de_outliers.ipynb))
+    * [Dados desbalanceados](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M04_outliers_e_dados_desbalanceados/2_dados_desbalanceados.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M04_outliers_e_dados_desbalanceados/dados_desbalanceados.ipynb))
 * M05 - Engenharia e seleção de atributos
     * [Engenharia de atributos](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M05_engenharia_e_selecao_de_atributos/1_engenharia_de_atributos.html)
     * [Seleção de atributos](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M05_engenharia_e_selecao_de_atributos/2_selecao_de_atributos.html)
+    * [Exemplo atividade 3](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M05_engenharia_e_selecao_de_atributos/atividade_3/analise_atributos_olist.ipynb)
 
 ## Tópicos abordados
 
