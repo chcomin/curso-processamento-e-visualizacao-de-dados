@@ -7,6 +7,7 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
     * [Princípios da Gestalt](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M01_introducao/2_principios_gestalt.html)
     * [Formatos de imagens](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M01_introducao/3_formatos_de_imagens.html)
 * M02 - Integridade de dados
+    * [Breve tutorial sobre Pandas](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M02_integridade_de_dados/a_biblioteca_pandas.ipynb)
     * [Formatos de dados](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M02_integridade_de_dados/1_formatos_de_dados.html)
     * [Checagens iniciais](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M02_integridade_de_dados/2_checagens_iniciais.html)
 * M03 - Imputação de valores ausentes e transformação de dados
@@ -15,6 +16,7 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
     * [Discretização e codificação](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M03_valores_ausentes_e_transformacoes/3_discretizacao_e_codificacao.html)
 * M04 - Outliers e dados desbalanceados
     * [Detecção de outliers](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M04_outliers_e_dados_desbalanceados/1_deteccao_de_outliers.html)
+    * [Dados desbalanceados](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M04_outliers_e_dados_desbalanceados/2_dados_desbalanceados.html)
 * M05 - Engenharia e seleção de atributos
     * [Engenharia de atributos](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M05_engenharia_e_selecao_de_atributos/1_engenharia_de_atributos.html)
     * [Seleção de atributos](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M05_engenharia_e_selecao_de_atributos/2_selecao_de_atributos.html)
