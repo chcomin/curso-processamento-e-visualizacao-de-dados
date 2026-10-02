@@ -24,9 +24,9 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
     * [Exemplo atividade 3](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M05_engenharia_e_selecao_de_atributos/atividade_3/analise_atributos_olist.ipynb)
 * M06 - Diagnósticos e organização de imagens
     * [Triagem de imagens](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M06_imagens/2_triagem_e_duplicatas.html) ([código 1](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M06_imagens/1_imagens_em_python.ipynb), [código 2](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M06_imagens/3_triagem_e_duplicatas.ipynb))
-    * [Diagnósticos em embeddings](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M06_imagens/5_diagnosticos_em_embeddings.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M06_imagens/5_diagnosticos_em_embeddings.ipynb))
+    * [Diagnósticos em embeddings](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M06_imagens/4_diagnosticos_em_embeddings.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M06_imagens/5_diagnosticos_em_embeddings.ipynb))
 
-    
+
 ## Tópicos abordados
 
 ### I. Pré-processamento de Dados
