@@ -25,6 +25,7 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
 * M06 - Diagnósticos e organização de imagens
     * [Triagem de imagens](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M06_imagens/2_triagem_e_duplicatas.html) ([código 1](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M06_imagens/1_imagens_em_python.ipynb), [código 2](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M06_imagens/3_triagem_e_duplicatas.ipynb))
     * [Diagnósticos em embeddings](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M06_imagens/4_diagnosticos_em_embeddings.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M06_imagens/5_diagnosticos_em_embeddings.ipynb))
+    * [Anotação de dados](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M06_imagens/6_anotacao_e_ruido_de_rotulos.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M06_imagens/7_anotacao_e_ruido_de_rotulos.ipynb))
 
 
 ## Tópicos abordados
