@@ -1,0 +1,271 @@
+---
+title: "Processamento de Linguagem Natural"
+subtitle: "Texto como dado"
+author:
+  - "Wesley Galvão"
+
+jupyter: pvd
+
+project:
+  type: default
+  output-dir: ../repositorio
+
+editor:
+  render-on-save: true
+
+execute:
+  echo: false            # Aula visual: o código está em laboratorio/2_texto_como_dado.ipynb
+  warning: false
+
+format:
+  revealjs:
+    # Geometry and spacing
+    width: 1024
+    height: 768
+
+    theme: [default, custom.scss]
+    transition: none
+    embed-resources: true
+
+    # Os gráficos são salvos maiores do que a caixa do slide e reduzidos pelo CSS,
+    # de modo a ocuparem a largura toda. Sem isso as fontes ficam pequenas.
+    fig-dpi: 150
+
+    slide-number: c
+    code-copy: true
+    code-line-numbers: true
+
+    # PDF settings
+    pdf-separate-fragments: false  # Merges fragment animations into a single PDF page
+    pdf-max-pages-per-slide: 1     # Force long/tall slides to remain on a single page
+    pdf-page-height-offset: -1     # Prevents unintended blank page overflows
+---
+
+```{python}
+import html
+import sys
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+sys.path.insert(0, str(Path.cwd()))
+
+import texto as tx
+from texto import GRAY, RED, INDIGO, GREEN, LIGHT, br, pct
+
+plt.rcParams.update({"figure.figsize": (9, 3.0), "font.size": 13,
+                     "axes.grid": True, "grid.alpha": 0.3})
+
+avaliacoes = tx.carregar_avaliacoes()
+mensagens = tx.com_mensagem(avaliacoes)
+amostra = tx.amostra_fixa(mensagens)
+
+# Uma régua por coluna: o corpus inteiro tokenizado de sete jeitos (com cache em disco).
+REGUAS = {"split(\" \")": "split_espaco", "\\S+": "espaco", "\\w+": "palavras", "só letras": "letras", "composto": "composto",
+          "NLTK": "nltk", "spaCy": "spacy", "GPT": "gpt"}
+resumos = {nome: tx.resumo_de_regua(tx.tokenizar_corpus(mensagens["mensagem"], r)) for nome, r in REGUAS.items()}
+docs = tx.tokenizar_corpus(mensagens["mensagem"], "composto", minusculas=True)
+stopwords = tx.stopwords_nltk()
+bigr_por_msg = [{f"{a} {b}" for a, b in zip(d, d[1:])} for d in docs]
+n_nao_recebi = {k: sum(k in b for b in bigr_por_msg) for k in ("não recebi", "nao recebi")}
+
+# As figuras de diagramas/ saem de diagramas/fonte/gerar_figuras.py, com os mesmos dados.
+
+
+# --- Funções auxiliares. O que elas fazem está no nome; o código não cabe no slide. ---
+
+def citar(linha, marcar=None):
+    """Uma avaliação como está no arquivo, com espaços e quebras visíveis e a nota ao lado."""
+    # O "$" de "R$" abriria modo matemático no Pandoc: vai como entidade HTML.
+    texto = html.escape(tx.visivel(tx.mascarar_pii(linha["mensagem"]))).replace("$", "&#36;")
+    if marcar:
+        texto = texto.replace(marcar, f'<span class="marca">{marcar}</span>')
+    classe = {"ruim": "ruim", "boa": "boa"}.get(linha["grupo"], "")
+    return f'<div class="frase {classe}"><span class="nota">nota {linha["nota"]}</span>{texto}</div>'
+
+
+def finalizar(ax, titulo=None):
+    if titulo:
+        ax.set_title(titulo, fontsize=15)
+    ax.grid(axis="x", visible=False)
+    plt.tight_layout()
+    plt.show()
+```
+
+# O problema
+
+## Olist: a nota diz quanto, o texto diz por quê
+
+**A pergunta da aula: do que reclamam os clientes da Olist?**
+
+O objetivo é usar PLN para:
+
+- transformar os comentários das avaliações em dados contáveis;
+- comparar o que escrevem os clientes insatisfeitos e os satisfeitos;
+- chegar às expressões que marcam as avaliações ruins: a primeira resposta.
+
+## O escopo desta aula
+
+![](diagramas/01_recorte_da_aula.svg){fig-align="center" width="100%"}
+
+Hoje, contar palavras e limpar o *corpus* para responder à pergunta. **Na próxima semana:
+representações vetoriais de texto**, que agrupam as avaliações pelo sentido.
+
+## As avaliações da Olist {.smaller}
+
+```{python}
+taxa = avaliacoes.groupby("nota")["mensagem"].apply(lambda s: 100 * s.notna().mean())
+fig, ax = plt.subplots(figsize=(9, 2.5))
+ax.bar([str(n) for n in taxa.index], taxa.values, color=[RED, RED, GRAY, GREEN, GREEN], width=0.6)
+for i, v in enumerate(taxa.values):
+    ax.text(i, v + 2.5, br(v, 1) + "%", ha="center", fontsize=12.5)
+ax.set_ylim(0, 100)
+ax.set_xlabel("nota", fontsize=12.5)
+ax.set_ylabel("% com comentário", fontsize=12.5)
+finalizar(ax, "quem avalia mal escreve mais")
+```
+
+- 99.224 avaliações; **40.977** (41,3%) têm comentário. **76,5%** das notas 1 têm comentário,
+  contra 35,9% das notas 5.
+- Notas 1 e 2 são avaliações **ruins** (10.890 comentários); 4 e 5 são **boas** (26.530).
+
+## Cinco avaliações, como estão no arquivo {.smaller}
+
+```{python}
+#| output: asis
+print("\n".join(citar(linha) for _, linha in amostra.iterrows()))
+```
+
+`↵` marca uma quebra de linha e `␣` um espaço sobrando no fim: na tela somem, no arquivo contam.
+
+# Do texto ao token
+
+## Corpus, token e vocabulário {.smaller}
+
+**Corpus.** O conjunto de textos analisado: os 40.977 comentários da Olist.\
+**Token.** Cada pedaço em que o texto é cortado para ser contado, em geral uma palavra.\
+**Tipo.** Um token único: as repetições contam uma vez só. Os tipos do *corpus* formam o **vocabulário**.
+
+![](diagramas/03_tokens_e_tipos.svg){fig-align="center" width="94%"}
+
+## Stopwords {.smaller}
+
+**Stopwords.** Palavras funcionais, muito frequentes e com pouco conteúdo próprio ("o", "de",
+"e"). Listas prontas, como a do NLTK, tiram essas palavras da contagem. A lista pode e deve ser
+customizada: "não" tem sentido próprio (Caseli e Nunes, 2026, cap. 4).
+
+{{< include diagramas/18_stopwords_customizadas.passos.md >}}
+
+## Da sentença ao byte {.smaller}
+
+**Unicode.** O padrão que dá um número a cada caractere de todas as escritas, emojis incluídos: o
+**ponto de código**, escrito U+ e o número em hexadecimal (é = U+00E9). O UTF-8 grava cada número
+em 1 a 4 bytes.\
+**Grafema.** O caractere que o leitor vê na tela. Pode ser feito de mais de um ponto de código:
+👍🏻 é o polegar (U+1F44D) mais o tom de pele (U+1F3FB).
+
+![](diagramas/02_camadas_do_texto.svg){fig-align="center" width="88%"}
+
+## Regex: o que é {.smaller}
+
+**Regex** (expressão regular) é um padrão que descreve um trecho de texto. O computador
+varre o texto e devolve cada trecho que casa com o padrão.
+
+![](diagramas/13_regex_exemplo.svg){fig-align="center" width="100%"}
+
+## Regex como régua de tokens {.smaller}
+
+A régua mais simples é cortar nos espaços; cada passo seguinte é um regex que corrige um defeito do anterior.
+
+{{< include animacoes/02_regex_passos.passos.md >}}
+
+## Três tokenizadores pré-treinados
+
+![](diagramas/04_tres_tokenizadores.svg){fig-align="center" width="100%"}
+
+NLTK e spaCy aplicam regras do português; o do GPT corta em pedaços aprendidos num corpus enorme.
+
+## O vocabulário depende da régua {.smaller}
+
+```{python}
+nomes = list(resumos)
+tipos = [resumos[n]["tipos"] for n in nomes]
+cores = [GRAY, GRAY, INDIGO, INDIGO, INDIGO, GREEN, GREEN, RED]
+fig, ax = plt.subplots(figsize=(9, 3.1))
+tx.barras(ax, nomes, tipos, cores)
+ax.set_xlabel("tipos (tokens únicos) no corpus", fontsize=12)
+finalizar(ax, "a mesma coluna, contada de oito jeitos")
+```
+
+- Cortando em cada espaço, **37.945** tipos: "prazo", "prazo." e "prazo," contam como três, e
+  4.875 tokens carregam uma quebra de linha. Com `\S+`, 35.098.
+- [Regex]{style="color:#4f46e5;font-weight:700"}, [regras do português]{style="color:#15803d;font-weight:700"}
+  (NLTK, spaCy) e [GPT]{style="color:#dc2626;font-weight:700"} ficam entre 14 e 22 mil: cada um corta o
+  texto num lugar diferente.
+
+# O corpus em números
+
+## Estatísticas do corpus
+
+![](diagramas/14_corpus_em_numeros.svg){fig-align="center" width="100%"}
+
+## Zipf: poucas palavras fazem quase todo o texto {.smaller}
+
+![](diagramas/15_zipf_motivacao.svg){fig-align="center" width="100%"}
+
+**Lei de Zipf.** Ordenadas da mais usada para a menos usada, as palavras perdem frequência
+depressa e sempre do mesmo jeito, em qualquer língua e em qualquer *corpus*. Sem stopwords, o topo
+muda ("produto", "recomendo"), mas a queda é a mesma: a 1.000ª aparece centenas de vezes menos que a 1ª.
+
+## Zipf na prática {.smaller}
+
+![](diagramas/16_zipf_na_pratica.svg){fig-align="center" width="100%"}
+
+100 palavras fazem 62% do texto; três quartos do vocabulário somam menos de 4%. Os motivos de
+reclamação estão no meio.
+
+# A primeira resposta
+
+## As palavras das reclamações {.smaller}
+
+**Do que reclamam os clientes?** Pares de palavras seguidas (*bigramas*) muito mais comuns nas
+avaliações ruins: a barra vermelha é a % das ruins que contêm o bigrama; a cinza, o mesmo nas boas.
+
+![](diagramas/20_termos_ruins.svg){fig-align="center" width="94%"}
+
+**A entrega domina**: "não recebi", "não chegou", "até agora".
+
+## O que essa contagem ainda não sabe
+
+- **"não recebi"** aparece em `{python} br(n_nao_recebi["não recebi"])` mensagens e **"nao recebi"** em
+  `{python} br(n_nao_recebi["nao recebi"])`: no gráfico, são dois termos.
+- "Muito bom" aparece no arquivo com **13 grafias** diferentes.
+- `{python} br(mensagens['review_id'].duplicated().sum())` comentários entram mais de uma vez: a mesma avaliação ligada a
+  vários pedidos.
+
+É o assunto da segunda parte: higiene de *corpus*.
+
+## Onde isso continua {.smaller}
+
+- **Higiene de corpus**, a seguir: normalização, filtros, *matching* (duplicatas e grupos de
+  reclamações parecidas) e dados pessoais. A mesma resposta, refeita no fim.
+- **Próxima semana**: representações vetoriais. "atrasou", "demorou" e "não chegou" contam
+  separado aqui; *embeddings* agrupam pelo sentido.
+- **Laboratório**: as réguas de regex, os três tokenizadores, as contagens, Zipf e os bigramas
+  das ruins, em código.
+
+## Referências {.smaller}
+
+- Caseli, H. M.; Nunes, M. G. V. (org.). *Processamento de Linguagem Natural: Conceitos, Técnicas
+  e Aplicações em Português*, 4ª ed. BPLN, 2026, cap. 4 (token e type, palavras funcionais,
+  tokenização, normalização). brasileiraspln.com/livro-pln-4ed
+- Jurafsky, D.; Martin, J. H. *Speech and Language Processing*, 3ª ed. (rascunho), cap. 2:
+  palavras, tokens e expressões regulares.
+- Zipf, G. K. *The Psycho-Biology of Language*. Houghton Mifflin, 1935.
+- Sennrich, R.; Haddow, B.; Birch, A. *Neural Machine Translation of Rare Words with Subword
+  Units*. ACL, 2016.
+- Unicode Standard Annex #29, *Unicode Text Segmentation* (grafemas).
+- Documentação: NLTK (`word_tokenize`, `stopwords`), spaCy (`pt_core_news_sm`), tiktoken
+  (`o200k_base`).
