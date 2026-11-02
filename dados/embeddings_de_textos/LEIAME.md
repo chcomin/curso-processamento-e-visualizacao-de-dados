@@ -1,6 +1,6 @@
-# Amostras de texto do laboratório do M08
+# Amostras de texto do laboratório de embeddings (M07)
 
-Quatro conjuntos de 3.000 textos com os vetores já calculados. Gerados por `scripts/preparar_corpora.py`.
+Quatro conjuntos de 3.000 textos com os vetores já calculados. Gerados por `M07_processamento_de_texto/desenvolvimento/embeddings/preparar_corpora.py`.
 
 Em todos: amostra simples com `random_state=42` sobre o que sobrou da limpeza (HTML e entidades removidos, espaços
 colapsados, vazios, duplicatas e textos curtos fora) e restrito às categorias mais frequentes. Modelo
