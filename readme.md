@@ -30,6 +30,9 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
     * [Exploração e pré-processamento](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M07_processamento_de_texto/1_texto_como_dado.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M07_processamento_de_texto/2_texto_como_dado.ipynb))
     * [Limpeza de corpus](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M07_processamento_de_texto/3_higiene_de_corpus.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M07_processamento_de_texto/4_higiene_de_corpus.ipynb))
     * [Embeddings de textos](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M07_processamento_de_texto/5_embeddings.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M07_processamento_de_texto/6_embeddings_de_textos.ipynb))
+* M08 - Fundamentos de visualização de dados
+    * [Conceitos fundamentais](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M08_fundamentos_de_visualizacao/1_conceitos_fundamentais.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M08_fundamentos_de_visualizacao/2_estetica_com_matplotlib.ipynb))
+    * [Tipos de visualizações](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M08_fundamentos_de_visualizacao/3_tipos_de_visualizacoes.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M08_fundamentos_de_visualizacao/4_tipos_de_visualizacoes.ipynb))
 
 
 ## Tópicos abordados
