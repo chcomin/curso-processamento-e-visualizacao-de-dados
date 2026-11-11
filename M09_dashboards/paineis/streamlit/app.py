@@ -39,6 +39,30 @@ def html(texto: str) -> str:
     return "".join(linha.strip() for linha in texto.splitlines())
 
 
+def ajuda(chave: str, texto: str) -> None:
+    """Botao redondo '?' (st.popover) que abre o balao de ajuda do grafico."""
+    with st.popover("?", help="Como ler este gráfico", key=f"ajuda_{chave}"):
+        st.markdown(texto)
+
+
+def titulo_cartao(chave: str, titulo: str, subtitulo: str, texto: str) -> None:
+    """Titulo H3 do cartao com o '?' ao lado (linha que nao empilha no celular)."""
+    with st.container(key=f"cab_{chave}"):
+        c_tit, c_aj = st.columns([30, 1], vertical_alignment="top")
+        with c_tit:
+            st.markdown(
+                html(f"""
+                <div class="card-container">
+                    <h3 class="card-title">{titulo}</h3>
+                    <div class="card-subtitle">{subtitulo}</div>
+                </div>
+                """),
+                unsafe_allow_html=True,
+            )
+        with c_aj:
+            ajuda(chave, texto)
+
+
 MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set"]
 
 
@@ -361,6 +385,28 @@ def calcular_serie_mensal(df: pd.DataFrame, indicador: str, m0: int, m1: int):
     return mensal, unidade, tot_2026_comp, tot_2025_comp
 
 
+AJUDA_P1 = (
+    "Cada cartão soma o crime em todo o Brasil nos meses do filtro de 2026 e compara com os mesmos "
+    "meses de 2025: Δ% = (2026 ÷ 2025 − 1) × 100. ▼ verde é queda (melhora) e ▲ vermelho é alta "
+    "(piora). Estes quatro cartões não mudam com o menu: são os crimes que a página acompanha sempre."
+)
+AJUDA_P2 = (
+    "A cor de cada estado é a taxa de {ind} por 100 mil habitantes em 2026, nos meses do filtro: "
+    "casos ÷ população do estado × 100 mil. Quanto mais escuro, maior o risco para cada morador. "
+    "A taxa, e não a contagem, permite comparar estados grandes e pequenos. O ranking lista os 5 "
+    "maiores. A taxa não é anualizada: com jan–jun, é a taxa de seis meses."
+)
+AJUDA_P3 = (
+    "Cada linha é um estado: o ponto claro é a taxa de 2025 e o escuro, a de 2026, nos mesmos meses. "
+    "Ponto escuro à esquerda do claro: a taxa caiu; à direita: subiu. Quanto maior a distância, "
+    "maior a mudança. Estados com poucos casos oscilam mais por acaso."
+)
+AJUDA_P4 = (
+    "Total de {ind} no Brasil, mês a mês: linha cheia = 2026 (até setembro), tracejada = 2025 "
+    "(ano inteiro). A faixa sombreada marca os meses do filtro. Se a linha cheia fica abaixo da "
+    "tracejada em quase todos os meses, a mudança é do ano todo, e não de um mês isolado."
+)
+
 # Topo da página (preenchido mais abaixo) e filtro temporal de meses
 topo = st.container()
 col_filtro, _ = st.columns([2, 3])
@@ -384,6 +430,8 @@ serie_mensal, unidade_indicador, total_2026_comp, total_2025_comp = (
 # 8. CONSTRUÇÃO VISUAL DA PÁGINA
 # ==============================================================================
 
+LOGO_SVG_TOPO = LOGO_SVG.replace('width="24" height="24"', 'width="22" height="22" aria-hidden="true"', 1)
+
 # Topo: trilha de navegação (breadcrumb) e chip do período de comparação
 with topo:
     st.markdown(
@@ -396,7 +444,8 @@ with topo:
             </div>
             <div class="period-chip">{rot} · 2026 × 2025</div>
         </div>
-        <div class="page-title">Segurança pública no Brasil</div>
+        <h1 class="page-title">Segurança pública no Brasil</h1>
+        <h2 class="page-tool"><span class="page-tool-logo">{LOGO_SVG_TOPO}</span>Painel em <strong>Streamlit</strong></h2>
         """),
         unsafe_allow_html=True,
     )
@@ -417,6 +466,12 @@ for item in kpis_dados:
         """)
     )
 kpis_html.append("</div>")
+with st.container(key="cab_p1"):
+    c_vg, c_aj = st.columns([30, 1], vertical_alignment="center")
+    with c_vg:
+        st.markdown('<div class="visao-geral">Visão geral</div>', unsafe_allow_html=True)
+    with c_aj:
+        ajuda("p1", AJUDA_P1)
 st.markdown("".join(kpis_html), unsafe_allow_html=True)
 
 # Grade principal em 7 colunas (esquerda) e 5 colunas (direita)
@@ -430,14 +485,11 @@ with col_esq:
         # --------------------------------------------------------------------------
         # P2: MAPA COROPLÉTICO + RANKING TOP 5
         # --------------------------------------------------------------------------
-        st.markdown(
-            html(f"""
-            <div class="card-container">
-                <div class="card-title">Onde o risco é maior?</div>
-                <div class="card-subtitle">{indicador_selecionado} · taxa por 100 mil hab. · {rot} 2026</div>
-            </div>
-            """),
-            unsafe_allow_html=True,
+        titulo_cartao(
+            "p2",
+            "Onde o risco é maior?",
+            f"{indicador_selecionado} · taxa por 100 mil hab. · {rot} 2026",
+            AJUDA_P2.format(ind=indicador_selecionado),
         )
 
         # Subdivisão interna de P2: 60% mapa coroplético e 40% ranking Top 5
@@ -597,20 +649,18 @@ with col_esq:
         # --------------------------------------------------------------------------
         # P4: TENDÊNCIA TEMPORAL MENSAL
         # --------------------------------------------------------------------------
+        titulo_cartao(
+            "p4",
+            "A mudança é de um mês ou do ano todo?",
+            f"{indicador_selecionado} · total no Brasil por mês ({unidade_indicador})",
+            AJUDA_P4.format(ind=indicador_selecionado),
+        )
         st.markdown(
             html(f"""
-            <div class="card-container">
-                <div class="card-header-flex">
-                    <div>
-                        <div class="card-title">A mudança é de um mês ou do ano todo?</div>
-                        <div class="card-subtitle">{indicador_selecionado} · total no Brasil por mês ({unidade_indicador})</div>
-                    </div>
-                    <div class="trend-legend-header">
-                        <span class="legend-dot-2026">● 2026 <strong>{format_int_br(total_2026_comp)}</strong></span>
-                        <span class="legend-sep">·</span>
-                        <span class="legend-dot-2025">○ 2025 <strong>{format_int_br(total_2025_comp)}</strong></span>
-                    </div>
-                </div>
+            <div class="trend-legend-header">
+                <span class="legend-dot-2026">● 2026 <strong>{format_int_br(total_2026_comp)}</strong></span>
+                <span class="legend-sep">·</span>
+                <span class="legend-dot-2025">○ 2025 <strong>{format_int_br(total_2025_comp)}</strong></span>
             </div>
             """),
             unsafe_allow_html=True,
@@ -741,14 +791,11 @@ with col_esq:
 # ------------------------------------------------------------------------------
 with col_dir:
     with st.container(key="card_p3"):
-        st.markdown(
-            html(f"""
-            <div class="card-container">
-                <div class="card-title">Quais estados melhoraram ou pioraram?</div>
-                <div class="card-subtitle">{indicador_selecionado} · taxa por 100 mil hab. · {rot} 2025 → 2026</div>
-            </div>
-            """),
-            unsafe_allow_html=True,
+        titulo_cartao(
+            "p3",
+            "Quais estados melhoraram ou pioraram?",
+            f"{indicador_selecionado} · taxa por 100 mil hab. · {rot} 2025 → 2026",
+            AJUDA_P3,
         )
 
         # Ordenação decrescente: estado com maior taxa de 2026 fica no topo

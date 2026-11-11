@@ -184,6 +184,42 @@ def renderizar_kpis_fixos(df, m1=1, m2=9):
     return cards
 
 
+AJUDA_KPIS = ("Cada cartão soma o crime em todo o Brasil nos meses do filtro de 2026 e compara com os mesmos meses de 2025: "
+              "Δ% = (2026 ÷ 2025 − 1) × 100. ▼ verde é queda (melhora) e ▲ vermelho é alta (piora). Estes quatro cartões "
+              "não mudam com o menu: são os crimes que a página acompanha sempre.")
+AJUDA_DUMBBELL = ("Cada linha é um estado: o ponto claro é a taxa de 2025 e o escuro, a de 2026, nos mesmos meses. "
+                  "Ponto escuro à esquerda do claro: a taxa caiu; à direita: subiu. Quanto maior a distância, maior a mudança. "
+                  "Estados com poucos casos oscilam mais por acaso.")
+
+
+def ajuda_p2(ind):
+    return (f"A cor de cada estado é a taxa de {ind} por 100 mil habitantes em 2026, nos meses do filtro: casos ÷ população "
+            "do estado × 100 mil. Quanto mais escuro, maior o risco para cada morador. A taxa, e não a contagem, permite "
+            "comparar estados grandes e pequenos. O ranking lista os 5 maiores. A taxa não é anualizada: com jan–jun, é a "
+            "taxa de seis meses.")
+
+
+def ajuda_p4(ind):
+    return (f"Total de {ind} no Brasil, mês a mês: linha cheia = 2026 (até setembro), tracejada = 2025 (ano inteiro). "
+            "A faixa sombreada marca os meses do filtro. Se a linha cheia fica abaixo da tracejada em quase todos os meses, "
+            "a mudança é do ano todo, e não de um mês isolado.")
+
+
+def ajuda(texto, id_texto=None):
+    """Botão "?" que abre um balão dentro do cartão (html.Details; fecha com Esc/clique fora via assets/ajuda.js)."""
+    return html.Details(
+        className="ajuda",
+        children=[
+            html.Summary("?", className="ajuda-botao", **{"aria-label": "Como ler este gráfico"}),
+            html.Div(texto, className="ajuda-balao", **({"id": id_texto} if id_texto else {}), **{"role": "note"}),
+        ],
+    )
+
+
+def titulo_ajuda(titulo, texto, id_texto=None):
+    return html.Div(className="titulo-ajuda", children=[html.H3(titulo, className="card-title"), ajuda(texto, id_texto)])
+
+
 # ------------------------------------------------------------------------------
 # 5. Inicialização da Aplicação Dash
 # ------------------------------------------------------------------------------
@@ -198,6 +234,7 @@ server = app.server  # Exposição para o Gunicorn
 # 6. Layout Principal
 # ------------------------------------------------------------------------------
 app.layout = html.Div(
+    id="dashboard-root",
     className="dashboard-root",
     children=[
         # Armazena em memória do navegador o indicador selecionado
@@ -210,6 +247,11 @@ app.layout = html.Div(
             className="sidebar",
             children=[
                 # Marca: ícone do Plotly/Dash + nome do painel e da ferramenta
+                html.Button(
+                    "‹ Recolher menu",
+                    className="sidebar-fechar",
+                    **{"data-alvo": "left", "aria-expanded": "true", "aria-label": "Recolher menu de indicadores"},
+                ),
                 html.Div(
                     className="brand-header",
                     children=[
@@ -259,11 +301,22 @@ app.layout = html.Div(
                     className="app-header",
                     children=[
                         html.Div(
+                            className="header-left",
+                            children=[
+                        html.Button(
+                            "☰",
+                            className="toggle-barra toggle-left",
+                            title="Mostrar ou ocultar o menu",
+                            **{"data-alvo": "left", "aria-expanded": "true", "aria-label": "Mostrar ou ocultar o menu de indicadores"},
+                        ),
+                        html.Div(
                             className="breadcrumb",
                             children=[
                                 html.Span("Painéis", className="breadcrumb-root"),
                                 html.Span("/", className="breadcrumb-sep"),
                                 html.Span("Segurança pública", className="breadcrumb-current"),
+                            ],
+                        ),
                             ],
                         ),
                         html.Div(
@@ -283,6 +336,12 @@ app.layout = html.Div(
                                 ),
                                 html.Div("jan–set · 2026 × 2025", id="period-chip", className="period-chip"),
                                 html.Button(
+                                    "ⓘ Sobre os dados",
+                                    className="toggle-barra toggle-right",
+                                    title="Mostrar ou ocultar o painel Sobre os dados",
+                                    **{"data-alvo": "right", "aria-expanded": "true", "aria-label": "Mostrar ou ocultar Sobre os dados"},
+                                ),
+                                html.Button(
                                     "◐",
                                     id="theme-toggle-btn",
                                     className="theme-toggle-btn",
@@ -298,13 +357,34 @@ app.layout = html.Div(
                 html.Main(
                     className="main-content",
                     children=[
-                        html.H1("Segurança pública no Brasil", className="page-title"),
+                        html.Div(
+                            className="page-head",
+                            children=[
+                                html.H1("Segurança pública no Brasil", className="page-title"),
+                                html.H2(
+                                    className="tool-line",
+                                    children=[
+                                        html.Span(className="tool-logo", **{"aria-hidden": "true"}),
+                                        html.Span(["Painel em ", html.Strong("Dash")]),
+                                    ],
+                                ),
+                            ],
+                        ),
 
                         # P1: KPIs Fixos
-                        html.Section(
-                            className="kpis-grid",
-                            id="kpis-grid",
-                            children=renderizar_kpis_fixos(df_raw),
+                        html.Div(
+                            className="kpis-bloco",
+                            children=[
+                                html.Div(
+                                    className="titulo-ajuda kpis-rotulo",
+                                    children=[html.Span("Visão geral", className="kpis-rotulo-texto"), ajuda(AJUDA_KPIS)],
+                                ),
+                                html.Section(
+                                    className="kpis-grid",
+                                    id="kpis-grid",
+                                    children=renderizar_kpis_fixos(df_raw),
+                                ),
+                            ],
                         ),
 
                         # P2, P3 e P4: Cartões Dinâmicos em CSS Grid
@@ -318,7 +398,7 @@ app.layout = html.Div(
                                         html.Div(
                                             className="card-header",
                                             children=[
-                                                html.H2("Onde o risco é maior?", className="card-title"),
+                                                titulo_ajuda("Onde o risco é maior?", ajuda_p2("Homicídio doloso"), "p2-ajuda-texto"),
                                                 html.Div(id="p2-subtitle", className="card-subtitle"),
                                             ],
                                         ),
@@ -354,7 +434,7 @@ app.layout = html.Div(
                                         html.Div(
                                             className="card-header",
                                             children=[
-                                                html.H2("Quais estados melhoraram ou pioraram?", className="card-title"),
+                                                titulo_ajuda("Quais estados melhoraram ou pioraram?", AJUDA_DUMBBELL),
                                                 html.Div(id="p3-subtitle", className="card-subtitle"),
                                             ],
                                         ),
@@ -375,7 +455,7 @@ app.layout = html.Div(
                                                 html.Div(
                                                     className="card-header-row",
                                                     children=[
-                                                        html.H2("A mudança é de um mês ou do ano todo?", className="card-title"),
+                                                        titulo_ajuda("A mudança é de um mês ou do ano todo?", ajuda_p4("Homicídio doloso"), "p4-ajuda-texto"),
                                                         html.Div(id="p4-legend", className="header-legend-p4"),
                                                     ],
                                                 ),
@@ -551,6 +631,8 @@ app.clientside_callback(
     Output("p4-tendencia-graph", "figure"),
     Output("kpis-grid", "children"),
     Output("period-chip", "children"),
+    Output("p2-ajuda-texto", "children"),
+    Output("p4-ajuda-texto", "children"),
     Input("indicador-ativo", "data"),
     Input("mes-de", "value"),
     Input("mes-ate", "value"),
@@ -959,6 +1041,8 @@ def atualizar_paineis(indicador_ativo, mes_de, mes_ate):
         fig_tend,
         renderizar_kpis_fixos(df_raw, m1, m2),
         f"{rot} · 2026 × 2025",
+        ajuda_p2(indicador_ativo),
+        ajuda_p4(indicador_ativo),
     )
 
 

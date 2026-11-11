@@ -9,16 +9,21 @@ Você vai entregar um web app do Google Apps Script com **uma página só**, sem
 
 ```text
 ┌───────────────────────────────────────────────────────────────┐
-│ Título · subtítulo (recorte e fonte)        De [jan▾] até [set▾] │
+│ H1 Título do painel                          De [jan▾] até [set▾] │
+│ H2 ícone + Painel em Google Apps Script                          │
+│ subtítulo (recorte e fonte)                                      │
 ├───────────────────────────────┬───────────────────────────────┤
-│ Pergunta 1                     │ Pergunta 2                     │
+│ H3 Pergunta 1              (?) │ H3 Pergunta 2              (?) │
 │ resposta em uma frase          │ resposta em uma frase          │
 │ gráfico de linhas: mês a mês,  │ gráfico de barras: grupos      │
 │ ano atual × ano anterior       │ ordenados + barra de referência│
 ├───────────────────────────────┴───────────────────────────────┤
-│ Tabela-resumo por grupo: anterior | atual | Δ% | taxa           │
+│ H3 Tabela-resumo por grupo: anterior | atual | Δ% | taxa    (?) │
 └───────────────────────────────────────────────────────────────┘
 ```
+
+O **(?)** de cada visualização abre um balão que explica como lê-la: o que ela mostra, como a
+conta é feita e um cuidado de leitura. Um painel que ninguém sabe ler não responde a pergunta.
 
 **As perguntas são do usuário.** Seu trabalho é entender os dados, ligar cada pergunta a um
 gráfico, preencher o `CONFIG` do modelo e conferir os números. **Não escreva código antes da
@@ -68,6 +73,9 @@ Mostre um plano curto e **espere o "ok"** do usuário:
 | (pergunta 2) | barras por grupo, ordenadas, com uma barra cinza de referência | taxa (ou soma) | meses do filtro |
 | (resumo) | tabela por grupo | anterior, atual, Δ%, taxa | meses do filtro |
 
+No plano, inclua também **o texto do "?" de cada visualização** (veja a etapa 4, item 3), para o
+usuário conferir se a explicação está certa e clara.
+
 Como ligar uma pergunta a um gráfico:
 
 | A pergunta é sobre... | Gráfico |
@@ -96,9 +104,18 @@ média de taxas). Sem denominador, é a média por grupo.
    - os textos: título, subtítulo, **as perguntas do usuário**, fonte, rótulos e unidade. Não
      escreva o período no subtítulo: o filtro e o selo ao lado dele já mostram os meses;
    - a polaridade (`menorMelhor`).
-3. Mude o `Index.html` só se o plano trocou o tipo de um gráfico. Mantenha o layout e as regras de visual.
-4. Se `webapp.access` não for "qualquer pessoa", troque `ANYONE_ANONYMOUS` por `DOMAIN` (só a organização) ou `MYSELF` (só o dono).
-5. Não invente números. Tudo que aparece na tela vem da planilha.
+3. **Interpretação de cada visualização (o "?").**
+   - Preencha `rotuloTaxa` com o que a taxa conta, por extenso, como "roubos por 100 mil habitantes" (e não "taxa").
+   - Preencha `rotuloDenominador` com o nome do denominador, como "população do estado".
+   - Com isso, o modelo já escreve um texto automático para cada "?". O do gráfico 2 traz uma conta de
+     exemplo com os números do primeiro colocado, como "Rio de Janeiro: 17.753 ÷ 17.225.410 × 100.000 = 103,06".
+   - Se o domínio pedir uma explicação melhor, escreva a sua em `CONFIG.ajuda` (gráfico 1, gráfico 2,
+     tabela): 2 ou 3 frases curtas, na linguagem do usuário, dizendo o que a visualização mostra, como ler
+     (cor, linha, barra, seta) e um cuidado. Exemplos de cuidado: "a taxa não é anualizada" ou
+     "grupos pequenos oscilam mais". Deixe `''` para usar o texto automático.
+4. Mude o `Index.html` só se o plano trocou o tipo de um gráfico. Mantenha o layout e as regras de visual.
+5. Se `webapp.access` não for "qualquer pessoa", troque `ANYONE_ANONYMOUS` por `DOMAIN` (só a organização) ou `MYSELF` (só o dono).
+6. Não invente números. Tudo que aparece na tela vem da planilha.
 
 ## 5. Conferir os números
 
@@ -143,9 +160,18 @@ Mudou a planilha? Rode `limparCache()` (o cache dura 6 h) ou aumente `versaoCach
 
 ## Regras de visual
 
-- **Layout.** Uma página, sem abas. No topo: o rótulo "Painel em Google Apps Script", o título,
-  o subtítulo (recorte e fonte) e o filtro De/Até. Duas colunas, que viram uma abaixo de 860 px,
-  sem rolagem horizontal.
+- **Layout.** Uma página, sem abas. No topo vêm:
+  - o título do painel em `<h1>` (o único da página);
+  - logo abaixo, em `<h2>`, o ícone e "Painel em Google Apps Script";
+  - o subtítulo (recorte e fonte);
+  - o filtro De/Até.
+
+  Os títulos dos cartões são `<h3>`. Duas colunas, que viram uma abaixo de 860 px, sem rolagem horizontal.
+- **Interpretação.** Cada visualização tem um botão "?" ao lado do título:
+  - redondo, 22 px, com `aria-label` "Como ler este gráfico";
+  - o balão abre e fecha no clique, e fecha com Esc ou com clique fora;
+  - o texto diz o que a visualização mostra, como ler e um cuidado;
+  - toda taxa vem acompanhada da conta, com números de verdade.
 - **Títulos.** O título de cada cartão é a **pergunta do usuário**. Logo abaixo vem uma frase
   com a resposta em número.
 - **Cores.**
@@ -216,11 +242,14 @@ const CONFIG = {
     valor: 'valor',         // número somável; '' = conta linhas
     denominador: ''         // opcional, constante por grupo e ano (ex.: populacao); vira taxa
   },
-  taxaPor: 100000, rotuloTaxa: 'por 100 mil hab.',   // só valem com denominador
+  // Só valem com denominador. rotuloTaxa diz o que a taxa conta, por extenso.
+  taxaPor: 100000, rotuloTaxa: 'registros por 100 mil habitantes', rotuloDenominador: 'denominador',
   rotuloGrupo: 'Grupo', nomeTotal: 'Total', unidade: 'registros', decimais: 0,
   maxBarras: 12,            // o gráfico 2 mostra só os maiores; a tabela mostra todos
   menorMelhor: false,       // true quando cair é bom (crimes, custos, atrasos)
   perguntas: ['Pergunta 1 do usuário', 'Pergunta 2 do usuário'],
+  // Texto do botão "?" de cada visualização (gráfico 1, gráfico 2, tabela). '' = texto automático.
+  ajuda: ['', '', ''],
   fonte: 'Fonte: ...',
   versaoCache: 1            // aumente quando mudar a planilha ou o CONFIG
 };
@@ -347,20 +376,28 @@ function limparCache() {
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--fundo); color: var(--tinta); font: 14px/1.45 var(--fonte); }
-  h1, h2, p { margin: 0; }
+  h1, h2, h3, p { margin: 0; }
   .topo, .grade, .rodape { max-width: 1240px; margin: 0 auto; }
   .topo { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 28px 32px 0; }
-  .marca { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--tinta-40); margin-bottom: 6px; }
-  .marca b { color: var(--tinta-60); font-weight: 600; }
   h1 { font-size: 24px; font-weight: 600; line-height: 1.25; }
+  h2.marca { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 400; color: var(--tinta-60); margin-top: 6px; }
+  h2.marca b { color: var(--tinta); font-weight: 600; }
   .sub { color: var(--tinta-60); margin-top: 4px; }
   .filtro { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 13px; color: var(--tinta-60); }
   .filtro select { font: inherit; color: var(--tinta); background: var(--cartao); border: 1px solid var(--linha); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
   .chip { background: rgba(28,28,28,.05); border-radius: 999px; padding: 4px 12px; font-size: 12px; white-space: nowrap; }
   .grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--vao); padding: 24px 32px; }
-  .cartao { background: var(--cartao); border-radius: var(--raio); padding: 24px; box-shadow: 0 1px 3px rgba(28,28,28,.06); min-width: 0; }
+  .cartao { position: relative; background: var(--cartao); border-radius: var(--raio); padding: 24px; box-shadow: 0 1px 3px rgba(28,28,28,.06); min-width: 0; }
   .largo { grid-column: 1 / -1; }
-  .cartao h2 { font-size: 16px; font-weight: 600; }
+  .cab { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .cartao h3 { font-size: 16px; font-weight: 600; }
+  /* botão "?" e balão com a leitura da visualização */
+  .ajuda { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(28,28,28,.25); background: var(--cartao);
+    color: var(--tinta-60); font: 600 12px/1 var(--fonte); cursor: pointer; }
+  .ajuda:hover, .ajuda[aria-expanded="true"] { background: var(--tinta); border-color: var(--tinta); color: #fff; }
+  .ajuda:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+  .balao { position: absolute; z-index: 5; top: 54px; left: 16px; right: 16px; max-width: 440px; margin-left: auto; background: var(--tinta);
+    color: #fff; border-radius: 12px; padding: 12px 14px; font-size: 13px; line-height: 1.55; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
   .resposta { color: var(--tinta-60); margin: 4px 0 12px; }
   .resposta b { color: var(--tinta); font-weight: 600; }
   .grafico { height: 320px; }
@@ -386,11 +423,11 @@ function limparCache() {
 <body>
 <header class="topo">
   <div>
-    <p class="marca">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="#4285F4" aria-hidden="true"><path d="M12.363 2.54a3.136 3.136 0 0 0-.376.022 2.864 2.864 0 0 0-1.589.828c-.562.58-.82 1.115-.773 1.943-.01.264.193 1.023.272 1.274 1.115 3.546 2.09 6.75 3.26 10.279.08.246.168.486.267.72.02.047.035.046.048-.004.077-.297.174-.612.29-.945.894-2.576 1.772-5.14 2.633-7.696a.345.345 0 0 0 .004-.217 163.054 163.054 0 0 0-1.49-4.572 2.603 2.603 0 0 0-.704-.933c-.55-.46-1.166-.694-1.842-.7Zm9.078.117a2.734 2.734 0 0 0-2.878 1.828l-4.576 13.289a2.734 2.734 0 0 0 1.695 3.475l.12.04a2.734 2.734 0 0 0 3.475-1.694L23.85 6.307a2.734 2.734 0 0 0-1.695-3.476c-.233-.1-.506-.124-.716-.174ZM12.375 3.96a1.396 1.396 0 1 1 0 2.791 1.395 1.395 0 0 1 0-2.79zm8.809.07a1.402 1.402 0 1 1 0 2.803 1.402 1.402 0 0 1 0-2.803zM5.419 7.605a2.853 2.853 0 0 0-.468.052 2.683 2.683 0 0 0-1.337.627 2.62 2.62 0 0 0-.924 1.833 3.808 3.808 0 0 0 0 .648 2.52 2.52 0 0 0 .673 1.52c.221.238.465.454.732.648 3.043 2.21 6.08 4.43 9.108 6.664a.78.78 0 0 0 .158.089c.03-.043.032-.098.007-.167a17.409 17.409 0 0 0-.317-1.066 532.752 532.752 0 0 1-2.02-6.251 41.91 41.91 0 0 0-.497-1.477c-.967-.849-2.078-1.6-3.023-2.302A3.848 3.848 0 0 0 6.153 7.7a2.388 2.388 0 0 0-.734-.094Zm.02 1.424a1.398 1.398 0 1 1 0 2.796 1.398 1.398 0 0 1 0-2.796zm-2.458 6.792c-.733-.006-1.375.202-1.927.622a2.72 2.72 0 0 0-.95 1.45 2.78 2.78 0 0 0-.09 1.04 2.74 2.74 0 0 0 .695 1.583c.664.578 1.26.85 2 .945 1.42-.005 2.84-.012 4.262-.02h.418c2.277-.003 4.513-.002 6.706.003.148.005.28.003.392-.01.06-.005.091-.031.092-.077a10.656 10.656 0 0 0-.834-.653 488.746 488.746 0 0 1-6.57-4.815.236.236 0 0 0-.14-.047c-1.34-.003-2.691-.01-4.054-.02zm-.19 1.418a1.402 1.402 0 1 1 0 2.803 1.402 1.402 0 0 1 0-2.803zm13.874.002a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8z"/></svg>
-      Painel em <b>Google Apps Script</b>
-    </p>
     <h1 id="titulo">Carregando…</h1>
+    <h2 class="marca">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="#4285F4" aria-hidden="true"><path d="M12.363 2.54a3.136 3.136 0 0 0-.376.022 2.864 2.864 0 0 0-1.589.828c-.562.58-.82 1.115-.773 1.943-.01.264.193 1.023.272 1.274 1.115 3.546 2.09 6.75 3.26 10.279.08.246.168.486.267.72.02.047.035.046.048-.004.077-.297.174-.612.29-.945.894-2.576 1.772-5.14 2.633-7.696a.345.345 0 0 0 .004-.217 163.054 163.054 0 0 0-1.49-4.572 2.603 2.603 0 0 0-.704-.933c-.55-.46-1.166-.694-1.842-.7Zm9.078.117a2.734 2.734 0 0 0-2.878 1.828l-4.576 13.289a2.734 2.734 0 0 0 1.695 3.475l.12.04a2.734 2.734 0 0 0 3.475-1.694L23.85 6.307a2.734 2.734 0 0 0-1.695-3.476c-.233-.1-.506-.124-.716-.174ZM12.375 3.96a1.396 1.396 0 1 1 0 2.791 1.395 1.395 0 0 1 0-2.79zm8.809.07a1.402 1.402 0 1 1 0 2.803 1.402 1.402 0 0 1 0-2.803zM5.419 7.605a2.853 2.853 0 0 0-.468.052 2.683 2.683 0 0 0-1.337.627 2.62 2.62 0 0 0-.924 1.833 3.808 3.808 0 0 0 0 .648 2.52 2.52 0 0 0 .673 1.52c.221.238.465.454.732.648 3.043 2.21 6.08 4.43 9.108 6.664a.78.78 0 0 0 .158.089c.03-.043.032-.098.007-.167a17.409 17.409 0 0 0-.317-1.066 532.752 532.752 0 0 1-2.02-6.251 41.91 41.91 0 0 0-.497-1.477c-.967-.849-2.078-1.6-3.023-2.302A3.848 3.848 0 0 0 6.153 7.7a2.388 2.388 0 0 0-.734-.094Zm.02 1.424a1.398 1.398 0 1 1 0 2.796 1.398 1.398 0 0 1 0-2.796zm-2.458 6.792c-.733-.006-1.375.202-1.927.622a2.72 2.72 0 0 0-.95 1.45 2.78 2.78 0 0 0-.09 1.04 2.74 2.74 0 0 0 .695 1.583c.664.578 1.26.85 2 .945 1.42-.005 2.84-.012 4.262-.02h.418c2.277-.003 4.513-.002 6.706.003.148.005.28.003.392-.01.06-.005.091-.031.092-.077a10.656 10.656 0 0 0-.834-.653 488.746 488.746 0 0 1-6.57-4.815.236.236 0 0 0-.14-.047c-1.34-.003-2.691-.01-4.054-.02zm-.19 1.418a1.402 1.402 0 1 1 0 2.803 1.402 1.402 0 0 1 0-2.803zm13.874.002a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8z"/></svg>
+      Painel em <b>Google Apps Script</b>
+    </h2>
     <p class="sub" id="subtitulo"></p>
   </div>
   <div class="filtro" role="group" aria-label="Filtro de período">
@@ -400,9 +437,21 @@ function limparCache() {
   </div>
 </header>
 <main class="grade" id="grade">
-  <section class="cartao"><h2 id="p1"></h2><p class="resposta" id="r1"></p><div class="grafico" id="g1"></div></section>
-  <section class="cartao"><h2 id="p2"></h2><p class="resposta" id="r2"></p><div class="grafico" id="g2"></div></section>
-  <section class="cartao largo"><h2 id="t-titulo"></h2><div class="rolagem"><table id="tabela"></table></div></section>
+  <section class="cartao">
+    <div class="cab"><h3 id="p1"></h3><button class="ajuda" type="button" aria-label="Como ler este gráfico" aria-expanded="false" aria-controls="aj1">?</button></div>
+    <div class="balao" id="aj1" role="note" hidden></div>
+    <p class="resposta" id="r1"></p><div class="grafico" id="g1"></div>
+  </section>
+  <section class="cartao">
+    <div class="cab"><h3 id="p2"></h3><button class="ajuda" type="button" aria-label="Como ler este gráfico" aria-expanded="false" aria-controls="aj2">?</button></div>
+    <div class="balao" id="aj2" role="note" hidden></div>
+    <p class="resposta" id="r2"></p><div class="grafico" id="g2"></div>
+  </section>
+  <section class="cartao largo">
+    <div class="cab"><h3 id="t-titulo"></h3><button class="ajuda" type="button" aria-label="Como ler esta tabela" aria-expanded="false" aria-controls="aj3">?</button></div>
+    <div class="balao" id="aj3" role="note" hidden></div>
+    <div class="rolagem"><table id="tabela"></table></div>
+  </section>
 </main>
 <footer class="rodape" id="fonte"></footer>
 <script>
@@ -433,6 +482,7 @@ function iniciar(dados) {
     if (+$('de').value > +$('ate').value) { const t = $('de').value; $('de').value = $('ate').value; $('ate').value = t; }
     desenhar();
   };
+  ligarAjuda();
   g1 = echarts.init($('g1'));
   g2 = echarts.init($('g2'));
   window.addEventListener('resize', () => { g1.resize(); g2.resize(); });
@@ -451,6 +501,41 @@ function textoDelta(d) {
   const piorou = D.config.menorMelhor ? d > 0 : d < 0;
   const classe = Math.abs(d) < 0.05 ? '' : (piorou ? 'ruim' : 'bom');
   return '<span class="' + classe + '">' + (d > 0 ? '▲ +' : d < 0 ? '▼ ' : '') + fmt(d, 1) + '%</span>';
+}
+
+// botões "?": abrem o balão do cartão; fecham no clique fora ou com Esc
+function ligarAjuda() {
+  document.querySelectorAll('.ajuda').forEach(b => b.addEventListener('click', ev => {
+    ev.stopPropagation();
+    const balao = $(b.getAttribute('aria-controls')), abrir = balao.hidden;
+    fecharAjuda();
+    if (abrir) { balao.hidden = false; b.setAttribute('aria-expanded', 'true'); }
+  }));
+  document.addEventListener('click', ev => { if (!ev.target.closest('.balao')) fecharAjuda(); });
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape') fecharAjuda(); });
+}
+function fecharAjuda() {
+  document.querySelectorAll('.balao').forEach(x => { x.hidden = true; });
+  document.querySelectorAll('.ajuda').forEach(x => x.setAttribute('aria-expanded', 'false'));
+}
+
+// texto do "?" de cada visualização: o do CONFIG ou um automático; a taxa ganha uma conta de exemplo
+function textosAjuda(ctx) {
+  const C = D.config, ant = D.anterior, atu = D.atual, grupo = C.rotuloGrupo.toLowerCase();
+  const auto = [
+    'Soma de ' + C.unidade + ' por mês em todo o recorte (' + C.nomeTotal + '). '
+      + (ant != null ? 'Linha cheia = ' + atu + '; tracejada cinza = ' + ant + ', nos mesmos meses. Linha cheia abaixo da tracejada: menos ' + C.unidade + ' que no ano anterior.' : 'Só há dados de ' + atu + '.'),
+    ctx.comTaxa
+      ? 'Taxa = ' + C.unidade + ' nos meses do filtro ÷ ' + C.rotuloDenominador + ' × ' + fmt(C.taxaPor) + ', ou seja, ' + C.rotuloTaxa
+        + '. Ela permite comparar quem tem tamanhos diferentes. A barra cinza é o ' + C.nomeTotal + ' inteiro (soma ÷ soma); em cor forte, quem está acima dele.'
+      : 'Soma de ' + C.unidade + ' de cada ' + grupo + ' nos meses do filtro, em ' + atu + '. A barra cinza é a média; em cor forte, quem está acima dela.',
+    'Soma de cada ' + grupo + ' nos meses do filtro' + (ant != null ? ', em ' + ant + ' e ' + atu + '. Δ% = (' + atu + ' ÷ ' + ant + ' − 1) × 100; a seta e a cor dizem se melhorou ou piorou.' : '.')
+      + (ctx.comTaxa ? ' A taxa é a mesma do gráfico ao lado. Na linha "' + C.nomeTotal + '", ela é soma ÷ soma, e não a média das taxas.' : '')
+  ];
+  const textos = auto.map((t, i) => (C.ajuda && C.ajuda[i]) || t);
+  if (ctx.comTaxa && ctx.lider) textos[1] += ' Ex.: ' + ctx.lider.nome + ': ' + fmt(ctx.lider.atu, C.decimais) + ' ÷ ' + fmt(ctx.lider.den) + ' × ' + fmt(C.taxaPor) + ' = ' + fmt(ctx.lider.taxa, 2) + '.';
+  if (ctx.cortado) textos[1] += ' O gráfico mostra os ' + ctx.maximo + ' maiores; a tabela lista todos.';
+  ['aj1', 'aj2', 'aj3'].forEach((id, i) => { $(id).textContent = textos[i]; });
 }
 
 function desenhar() {
@@ -507,6 +592,7 @@ function desenhar() {
   const nomeRef = comTaxa ? C.nomeTotal : 'Média';
   const lider = comDado[0];
   const maximo = C.maxBarras || 12;
+  textosAjuda({ comTaxa, lider, maximo, cortado: comDado.length > maximo });
   $('r2').innerHTML = lider ? '<b>' + esc(lider.nome) + '</b>: ' + fmt(lider[medida], casas) + ' ' + esc(comTaxa ? C.rotuloTaxa : C.unidade)
     + ' · ' + esc(nomeRef) + ': ' + fmt(ref, casas) + (comDado.length > maximo ? ' · ' + maximo + ' maiores de ' + comDado.length : '') : '';
   const barras = comDado.slice(0, maximo).map(l => ({ nome: l.id, valor: l[medida], cor: l[medida] > ref ? cor('--destaque') : cor('--destaque-claro') }));
@@ -530,7 +616,7 @@ function desenhar() {
   const linha = (l, classe) => '<tr' + (classe ? ' class="' + classe + '"' : '') + '><td>' + esc(l.nome) + '</td>'
     + (temAnterior ? '<td>' + fmt(l.ant, C.decimais) + '</td>' : '') + '<td>' + fmt(l.atu, C.decimais) + '</td>'
     + (temAnterior ? '<td>' + textoDelta(l.delta) + '</td>' : '') + (comTaxa ? '<td>' + fmt(l.taxa, 2) + '</td>' : '') + '</tr>';
-  $('t-titulo').textContent = 'Resumo por ' + C.rotuloGrupo.toLowerCase() + ' · ' + periodo + (comTaxa ? ' · taxa ' + C.rotuloTaxa : '');
+  $('t-titulo').textContent = 'Resumo por ' + C.rotuloGrupo.toLowerCase() + ' · ' + periodo + (comTaxa ? ' · taxa = ' + C.rotuloTaxa : '');
   $('tabela').innerHTML = '<thead><tr>' + cab + '</tr></thead><tbody>' + linhas.map(l => linha(l)).join('') + linha(tot, 'total') + '</tbody>';
 }
 
