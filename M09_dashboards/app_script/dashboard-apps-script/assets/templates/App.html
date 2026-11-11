@@ -1,0 +1,315 @@
+<script>
+/* Navegador: pede os números ao servidor (Code.gs) e desenha a página. */
+const estado = { inicio: null, metrica: null, dados: {}, graficos: {}, geo: null };
+const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+
+// ---------------------------------------------------------- formatação ---
+const fmtInt = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
+/** Total no formato do CONFIG (casas decimais, R$, kg...). */
+function fmtTotal(v) {
+  const f = (estado.inicio && estado.inicio.formato) || { decimais: 0, prefixo: '', sufixo: '' };
+  if (v === null || v === undefined) return '—';
+  const n = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: f.decimais, maximumFractionDigits: f.decimais }).format(v);
+  return menos(f.prefixo + n + f.sufixo);
+}
+/** Texto vindo da planilha entra no HTML escapado (nomes com <, &, " não quebram a página). */
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+const fmtTaxa = v => new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
+const menos = s => s.replace('-', '−');   // sinal de menos tipográfico
+const fmtDelta = d => (d === null ? '—' : menos((d > 0 ? '+' : '') + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(d) + '%'));
+const seta = d => (d === null || d === 0 ? '' : d > 0 ? ' ↗' : ' ↘');
+const css = nome => getComputedStyle(document.documentElement).getPropertyValue(nome).trim();
+const el = id => document.getElementById(id);
+
+/** Classe de cor do Δ conforme a polaridade da métrica. */
+function classeDelta(delta, polaridade) {
+  if (polaridade === 'neutro' || delta === null || delta === 0) return 'delta-neutral';
+  const subiu = delta > 0;
+  const bom = polaridade === 'maior_melhor' ? subiu : !subiu;
+  return bom ? 'delta-good' : 'delta-bad';
+}
+
+// ------------------------------------------------------ filtro temporal ---
+const rotuloMeses = (m0, m1) => (m0 === m1 ? MESES[m0 - 1] : MESES[m0 - 1] + '–' + MESES[m1 - 1]);
+const variacao = (a, b) => (a && b !== null ? (b / a - 1) * 100 : null);
+/** Soma os meses m0..m1 de uma série mensal (null = mês sem dado). */
+function somaMeses(serie, m0, m1) {
+  let soma = 0, achou = false;
+  for (let m = m0; m <= m1; m++) {
+    const v = serie[m - 1];
+    if (v !== null && v !== undefined) { soma += v; achou = true; }
+  }
+  return achou ? soma : null;
+}
+/**
+ * Transforma as séries mensais do servidor nos números do intervalo escolhido:
+ * os mesmos meses nos dois anos, como na tabela dinâmica de conferência.
+ */
+function agregar(bruto) {
+  const [m0, m1] = estado.intervalo;
+  const taxa = (v, den) => (v !== null && den ? v / den * estado.inicio.taxaPor : null);
+  const porGeo = bruto.porGeo.map(g => {
+    const antes = somaMeses(g.anterior, m0, m1), depois = somaMeses(g.atual, m0, m1);
+    return { geo: g.geo, nome: g.nome, anterior: antes, atual: depois,
+             taxaAnterior: taxa(antes, g.denAnterior), taxaAtual: taxa(depois, g.denAtual),
+             delta: variacao(antes, depois) };
+  });
+  const antes = somaMeses(bruto.serie.anterior, m0, m1), depois = somaMeses(bruto.serie.atual, m0, m1);
+  return Object.assign({}, bruto, {
+    periodo: Object.assign({}, bruto.periodo, { rotulo: rotuloMeses(m0, m1) }),
+    porGeo: porGeo, anterior: antes, atual: depois, delta: variacao(antes, depois)
+  });
+}
+
+// ------------------------------------------------- chamadas ao servidor ---
+function servidor(funcao, arg) {
+  return new Promise((ok, falha) => {
+    const r = google.script.run.withSuccessHandler(ok).withFailureHandler(falha);
+    arg === undefined ? r[funcao]() : r[funcao](arg);
+  });
+}
+
+function mostrarErro(e) {
+  el('erro-texto').textContent = 'Não consegui carregar os dados: ' + (e && e.message ? e.message : e);
+  el('erro').hidden = false;
+}
+el('erro-tentar').onclick = () => { el('erro').hidden = true; iniciar(); };
+
+// ------------------------------------------------------------- início ---
+async function iniciar() {
+  try {
+    const ini = await servidor('getInicio');
+    estado.inicio = ini;
+    estado.geo = window.GEOJSON || (ini.urlGeojson ? await (await fetch(ini.urlGeojson)).json() : null);
+    if (estado.geo) echarts.registerMap('areas', estado.geo);
+    estado.intervalo = [1, ini.periodo.ultimoMes];   // padrão: todo o período comparável
+    desenharMoldura(ini);
+    await selecionar(ini.padrao);
+  } catch (e) { mostrarErro(e); }
+}
+
+function desenharMoldura(ini) {
+  const p = ini.periodo;
+  el('caminho').innerHTML = ini.caminho.map(c => '<span>' + esc(c) + '</span>').join('');
+  el('t-mapa').textContent = ini.perguntas.mapa;
+  el('t-pareado').textContent = ini.perguntas.pareado;
+  el('t-tendencia').textContent = ini.perguntas.tendencia;
+  if (!ini.temGeo) { el('cartao-mapa').hidden = true; el('cartao-pareado').hidden = true; }
+
+  desenharFiltroTempo(p);
+  desenharKpis();
+
+  // menu lateral e seletor compacto
+  el('menu').innerHTML = ini.menu.map(g => `
+    <div class="grupo-menu"><span>${esc(g.grupo)}</span>
+      ${g.itens.map(m => `<button class="item-menu" data-metrica="${esc(m)}">${esc(m)}</button>`).join('')}
+    </div>`).join('');
+  el('menu').onclick = ev => { const b = ev.target.closest('.item-menu'); if (b) selecionar(b.dataset.metrica); };
+  el('seletor-compacto').innerHTML = ini.menu.map(g =>
+    `<optgroup label="${esc(g.grupo)}">${g.itens.map(m => `<option>${esc(m)}</option>`).join('')}</optgroup>`).join('');
+  el('seletor-compacto').onchange = ev => selecionar(ev.target.value);
+
+  // notas (painel direito e rodapé)
+  const notas = ini.notas.map((n, i) => `<li><span class="icone">${i + 1}</span><div><b>${esc(n.titulo)}</b><small>${esc(n.texto)}</small></div></li>`).join('');
+  el('notas').innerHTML = notas;
+  el('notas-rodape').innerHTML = '<div class="cartao"><h2>Sobre os dados</h2><ul class="notas" style="margin-top:12px">' + notas + '</ul></div>';
+}
+
+/** Seletores De/Até: meses de jan até o último mês com dado no ano atual. */
+function desenharFiltroTempo(p) {
+  const opcoes = MESES.slice(0, p.ultimoMes).map((m, i) => `<option value="${i + 1}">${m}</option>`).join('');
+  el('mes-ini').innerHTML = opcoes;
+  el('mes-fim').innerHTML = opcoes;
+  el('mes-ini').value = String(estado.intervalo[0]);
+  el('mes-fim').value = String(estado.intervalo[1]);
+  const mudou = () => {
+    let m0 = Number(el('mes-ini').value), m1 = Number(el('mes-fim').value);
+    if (m0 > m1) { [m0, m1] = [m1, m0]; el('mes-ini').value = String(m0); el('mes-fim').value = String(m1); }
+    estado.intervalo = [m0, m1];
+    desenharKpis();
+    if (estado.dados[estado.metrica]) desenharCartoes(estado.dados[estado.metrica]);
+  };
+  el('mes-ini').onchange = mudou;
+  el('mes-fim').onchange = mudou;
+}
+
+/** KPIs fixos: não mudam com o indicador, mas seguem o filtro temporal. */
+function desenharKpis() {
+  const ini = estado.inicio, p = ini.periodo, [m0, m1] = estado.intervalo;
+  const rotulo = rotuloMeses(m0, m1);
+  el('chip-periodo').textContent = rotulo + ' · ' + p.anoAtual + ' × ' + p.anoAnterior;
+  el('kpis').innerHTML = ini.kpis.map(k => {
+    const antes = somaMeses(k.serie.anterior, m0, m1), depois = somaMeses(k.serie.atual, m0, m1);
+    const delta = variacao(antes, depois);
+    return `
+    <div class="kpi">
+      <div class="kpi-rotulo">${esc(k.metrica)}</div>
+      <div class="kpi-linha">
+        <span class="kpi-numero">${fmtTotal(depois)}</span>
+        <span class="kpi-delta ${classeDelta(delta, k.polaridade)}">${fmtDelta(delta)}${seta(delta)}</span>
+      </div>
+      <div class="kpi-base">vs ${fmtTotal(antes)} em ${rotulo} ${p.anoAnterior}</div>
+    </div>`;
+  }).join('');
+}
+
+// ------------------------------------------------------ troca de métrica ---
+async function selecionar(metrica) {
+  estado.metrica = metrica;
+  document.querySelectorAll('.item-menu').forEach(b => b.setAttribute('aria-current', String(b.dataset.metrica === metrica)));
+  el('seletor-compacto').value = metrica;
+  ['g-mapa', 'g-pareado', 'g-tendencia'].forEach(id => el(id).classList.add('esqueleto'));
+  try {
+    const d = estado.dados[metrica] || (estado.dados[metrica] = await servidor('getPainel', metrica));
+    if (estado.metrica !== metrica) return;   // o usuário já clicou em outra
+    desenharCartoes(d);
+  } catch (e) { mostrarErro(e); }
+  finally { ['g-mapa', 'g-pareado', 'g-tendencia'].forEach(id => el(id).classList.remove('esqueleto')); }
+}
+
+/** Estado vazio de um cartão (ui-spec: "Sem dados para este recorte"). */
+function vazio(id) {
+  if (estado.graficos[id]) { estado.graficos[id].dispose(); delete estado.graficos[id]; }
+  el(id).innerHTML = '<p class="vazio">Sem dados para este recorte</p>';
+}
+
+function grafico(id) {
+  if (estado.graficos[id]) estado.graficos[id].dispose();
+  el(id).innerHTML = '';
+  estado.graficos[id] = echarts.init(el(id), null, { renderer: 'svg' });
+  return estado.graficos[id];
+}
+
+/** Estilo comum dos eixos (ui-spec, seção 5). */
+function eixo(extra) {
+  return Object.assign({
+    axisLine: { show: false }, axisTick: { show: false },
+    axisLabel: { color: css('--ink-40'), fontSize: 12, fontFamily: 'Inter' },
+    splitLine: { lineStyle: { color: css('--ink-10') } }
+  }, extra);
+}
+
+function desenharCartoes(bruto) {
+  const d = agregar(bruto);
+  const ini = estado.inicio, p = d.periodo;
+  const usaTaxa = ini.temTaxa;
+  const valorDe = g => (usaTaxa ? g.taxaAtual : g.atual);
+  const fmtValor = v => (usaTaxa ? fmtTaxa(v) : fmtTotal(v));
+  const medida = usaTaxa ? ini.rotuloTaxa : 'total (' + d.unidade + ')';
+
+  el('s-mapa').textContent = `${d.metrica} · ${medida} · ${p.rotulo} ${p.anoAtual}`;
+  el('s-pareado').textContent = `${d.metrica} · ${medida} · ${p.rotulo} ${p.anoAnterior} → ${p.anoAtual}`;
+  el('s-tendencia').textContent = `${d.metrica} · total por mês (${d.unidade})`;
+  el('legenda-serie').innerHTML =
+    `<span><i class="marcador" style="background:${css('--data-1')}"></i>${p.anoAtual}<b>${fmtTotal(d.atual)}</b></span>` +
+    `<span><i class="marcador vazado"></i>${p.anoAnterior}<b>${fmtTotal(d.anterior)}</b></span>`;
+
+  if (ini.temGeo && estado.geo) desenharMapa(d, valorDe, fmtValor);
+  if (ini.temGeo) desenharPareado(d, fmtValor);
+  desenharTendencia(d);
+}
+
+// ------------------------------------------------- P2: mapa + ranking ---
+function desenharMapa(d, valorDe, fmtValor) {
+  const ordenado = d.porGeo.filter(g => valorDe(g) !== null).sort((a, b) => valorDe(b) - valorDe(a));
+  if (!ordenado.length) { vazio('g-mapa'); el('ranking').innerHTML = ''; el('legenda-mapa').innerHTML = ''; return; }
+  const valores = ordenado.map(valorDe).slice().sort((a, b) => a - b);
+  const cores = ['--seq-0', '--seq-1', '--seq-2', '--seq-3', '--seq-4'].map(css);
+  // 5 classes por quantis
+  const q = k => valores[Math.min(valores.length - 1, Math.floor(k * valores.length / 5))];
+  const cortes = [valores[0], q(1), q(2), q(3), q(4), valores[valores.length - 1]];
+  const pecas = cores.map((cor, i) => ({ min: cortes[i], max: cortes[i + 1], color: cor }));
+
+  grafico('g-mapa').setOption({
+    tooltip: {
+      trigger: 'item', confine: true,
+      formatter: x => {
+        const g = d.porGeo.find(a => a.geo === x.name); if (!g) return x.name;
+        return `<b>${esc(g.nome)}</b><br>${d.periodo.anoAtual}: ${fmtValor(valorDe(g))}<br>` +
+          `${d.periodo.anoAnterior}: ${fmtValor(estado.inicio.temTaxa ? g.taxaAnterior : g.anterior)}<br>Δ ${fmtDelta(g.delta)}`;
+      }
+    },
+    visualMap: { type: 'piecewise', show: false, pieces: pecas, dimension: 0 },
+    series: [{
+      type: 'map', map: 'areas', nameProperty: estado.inicio.propriedadeGeo, roam: false,
+      itemStyle: { borderColor: css('--bg'), borderWidth: 0.5 },
+      emphasis: { label: { show: false }, itemStyle: { areaColor: css('--data-3') } },
+      select: { disabled: true },
+      data: ordenado.map(g => ({ name: g.geo, value: valorDe(g) }))
+    }]
+  });
+
+  el('legenda-mapa').innerHTML = pecas.map(pc => `<span><i style="background:${pc.color}"></i>${fmtValor(pc.min)}–${fmtValor(pc.max)}</span>`).join('');
+  const maior = valorDe(ordenado[0]) || 1;
+  el('ranking').innerHTML = ordenado.slice(0, 5).map(g => `
+    <li><div class="linha"><span>${esc(g.nome)}</span><span>${fmtValor(valorDe(g))}</span></div>
+      <div class="trilho"><div class="barra" style="width:${(100 * valorDe(g) / maior).toFixed(1)}%"></div></div></li>`).join('');
+}
+
+// --------------------------------------------------- P3: pareado (dumbbell) ---
+function desenharPareado(d, fmtValor) {
+  const taxa = estado.inicio.temTaxa;
+  const v0 = g => (taxa ? g.taxaAnterior : g.anterior), v1 = g => (taxa ? g.taxaAtual : g.atual);
+  const linhas = d.porGeo.filter(g => v1(g) !== null).sort((a, b) => v1(a) - v1(b));   // maior fica em cima
+  if (!linhas.length) { vazio('g-pareado'); return; }
+  el('g-pareado').style.height = (linhas.length * 20 + 40) + 'px';
+  const corSegmento = g => {
+    const c = classeDelta(v1(g) - v0(g), d.polaridade);
+    return c === 'delta-good' ? css('--good') : c === 'delta-bad' ? css('--bad') : css('--ink-40');
+  };
+  grafico('g-pareado').setOption({
+    grid: { left: 36, right: 16, top: 8, bottom: 24 },
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'none' }, confine: true,
+      formatter: xs => { const g = linhas[xs[0].dataIndex];
+        return `<b>${esc(g.nome)}</b><br>${d.periodo.anoAnterior}: ${fmtValor(v0(g))}<br>${d.periodo.anoAtual}: ${fmtValor(v1(g))}<br>Δ ${fmtDelta(g.delta)}`; }
+    },
+    xAxis: eixo({ type: 'value', min: 0, splitLine: { lineStyle: { color: css('--ink-10') } } }),
+    yAxis: eixo({ type: 'category', data: linhas.map(g => g.geo), splitLine: { show: false },
+                  axisLabel: { color: css('--ink-40'), fontSize: 12, fontFamily: 'Inter', interval: 0 } }),
+    series: [
+      { type: 'custom', silent: true, encode: { x: [0, 1], y: 2 }, data: linhas.map((g, i) => [v0(g), v1(g), i]),
+        renderItem: (params, api) => {
+          const a = api.coord([api.value(0), api.value(2)]), b = api.coord([api.value(1), api.value(2)]);
+          return { type: 'line', shape: { x1: a[0], y1: a[1], x2: b[0], y2: b[1] },
+                   style: { stroke: corSegmento(linhas[params.dataIndex]), lineWidth: 2 } };
+        } },
+      { type: 'scatter', name: String(d.periodo.anoAnterior), symbolSize: 6, itemStyle: { color: css('--data-2') }, data: linhas.map(v0) },
+      { type: 'scatter', name: String(d.periodo.anoAtual), symbolSize: 8, itemStyle: { color: css('--data-1') }, data: linhas.map(v1) }
+    ]
+  });
+}
+
+// ------------------------------------------------------------ P4: tendência ---
+function desenharTendencia(d) {
+  const p = d.periodo;
+  const rotulo = (cor) => ({ show: true, formatter: '{a}', color: cor, fontSize: 12, fontFamily: 'Inter' });
+  grafico('g-tendencia').setOption({
+    grid: { left: 48, right: 48, top: 12, bottom: 24 },
+    tooltip: { trigger: 'axis', confine: true, valueFormatter: v => fmtTotal(v) },
+    xAxis: eixo({ type: 'category', data: MESES, boundaryGap: false, splitLine: { show: false } }),
+    yAxis: eixo({ type: 'value', min: 0, axisLabel: { color: css('--ink-40'), fontSize: 12, formatter: v => fmtInt.format(v) } }),
+    series: [
+      { name: String(p.anoAnterior), type: 'line', data: d.serie.anterior, showSymbol: false, symbol: 'circle',
+        lineStyle: { color: css('--data-2'), width: 2, type: [4, 4] }, itemStyle: { color: css('--data-2') },
+        endLabel: rotulo(css('--ink-40')),
+        // meses do filtro temporal sombreados
+        markArea: { silent: true, itemStyle: { color: css('--hover') },
+                    data: [[{ xAxis: MESES[estado.intervalo[0] - 1] }, { xAxis: MESES[estado.intervalo[1] - 1] }]] } },
+      { name: String(p.anoAtual), type: 'line', data: d.serie.atual, showSymbol: false, symbol: 'circle',
+        lineStyle: { color: css('--data-1'), width: 2 }, itemStyle: { color: css('--data-1') },
+        endLabel: rotulo(css('--ink')) }
+    ]
+  });
+}
+
+// ----------------------------------------------------------- tema e tamanho ---
+el('tema').onclick = () => {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  if (estado.metrica && estado.dados[estado.metrica]) desenharCartoes(estado.dados[estado.metrica]);
+};
+window.addEventListener('resize', () => Object.values(estado.graficos).forEach(g => g.resize()));
+
+iniciar();
+</script>

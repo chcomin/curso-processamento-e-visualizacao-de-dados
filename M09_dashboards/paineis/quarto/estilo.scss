@@ -1,0 +1,635 @@
+/*-- scss:defaults --*/
+$web-font-path: false; // sem fonte web do tema (deixa o HTML leve)
+// Configuração do tema SnowUI para Quarto Dashboard via Bootstrap 5
+$font-family-base: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+$body-bg: #FFFFFF;
+$body-color: #1C1C1C;
+$card-border-radius: 16px;
+$card-border-width: 0;
+$card-bg: #F7F9FB;
+$card-cap-bg: transparent;
+
+/*-- scss:rules --*/
+/* Inter só em latim, pesos 400 e 600, fixa no jsDelivr (arquivo leve) */
+@font-face {
+  font-family: "Inter";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/files/inter-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/npm/@fontsource/inter@5.1.0/files/inter-latin-600-normal.woff2") format("woff2");
+}
+
+:root {
+  /* Superfícies */
+  --bg: #FFFFFF;
+  --surface: #F7F9FB;
+  --surface-blue: #DDF3EF;
+  --surface-lav: #E6EFEC;
+  --hover: rgba(28, 28, 28, 0.05);
+  --selected: rgba(28, 28, 28, 0.05);
+  --divider: rgba(28, 28, 28, 0.10);
+
+  /* Texto */
+  --ink: #1C1C1C;
+  --ink-80: rgba(28, 28, 28, 0.80);
+  --ink-40: rgba(28, 28, 28, 0.40);
+  --ink-20: rgba(28, 28, 28, 0.20);
+  --ink-10: rgba(28, 28, 28, 0.10);
+
+  /* Séries de dados */
+  --data-1: #0F3D38;
+  --data-2: #93CFC5;
+
+  /* Escala sequencial */
+  --seq-0: #DDF3EF;
+  --seq-1: #A6DDD3;
+  --seq-2: #62BCAD;
+  --seq-3: #2A8C7E;
+  --seq-4: #0E4F47;
+
+  /* Semântica do delta */
+  --good: #0F7B5F;
+  --bad: #C0362C;
+
+  /* Forma */
+  --destaque: #2A8C7E;
+  --radius-card: 16px;
+  --radius-control: 8px;
+  --radius-pill: 999px;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: var(--bg) !important;
+  color: var(--ink) !important;
+  font-family: var(--font) !important;
+}
+
+/* Barra de Navegação do Dashboard Quarto */
+.navbar {
+  background-color: var(--bg) !important;
+  border-bottom: 1px solid var(--divider) !important;
+  box-shadow: none !important;
+  padding: 14px 24px !important;
+
+  .navbar-brand {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--ink) !important;
+  }
+}
+
+/* Sidebar e navegação vertical */
+.bslib-sidebar-layout > .sidebar,
+.sidebar {
+  background-color: var(--bg) !important;
+  border-right: 1px solid var(--divider) !important;
+  padding: 16px 14px !important;
+  font-family: var(--font) !important;
+}
+
+.sidebar-header {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--divider);
+}
+
+.sidebar-breadcrumb {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-40);
+  margin-bottom: 6px;
+}
+
+.sidebar-chip {
+  display: inline-block;
+  background-color: var(--hover);
+  border-radius: var(--radius-pill);
+  padding: 3px 10px;
+  font-size: 11px;
+  color: var(--ink-80);
+  font-weight: 500;
+}
+
+/* Menu de navegação do SnowUI */
+.snow-nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.snow-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.snow-menu-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ink-40);
+  padding: 4px 8px;
+  margin-top: 4px;
+}
+
+.snow-menu-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 28px;
+  padding: 4px 8px 4px 12px;
+  border-radius: var(--radius-control);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  user-select: none;
+  margin: 0;
+
+  &:hover {
+    background-color: var(--hover);
+  }
+
+  &.active {
+    background-color: var(--selected);
+    font-weight: 600;
+
+    .snow-bar {
+      opacity: 1;
+    }
+  }
+
+  .snow-bar {
+    position: absolute;
+    left: 2px;
+    width: 3px;
+    height: 16px;
+    background-color: var(--destaque);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .snow-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Seção Sobre os dados */
+.sobre-dados {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--divider);
+  font-size: 12px;
+}
+
+.sobre-dados-titulo {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.sobre-dados-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sobre-dados-num {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--surface-blue);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sobre-dados-desc {
+  color: var(--ink-80);
+  line-height: 1.35;
+}
+
+/* Cartões do Dashboard */
+.card {
+  background-color: var(--surface) !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: var(--radius-card) !important;
+  padding: 16px !important;
+  font-family: var(--font) !important;
+
+  .card-header {
+    background-color: transparent !important;
+    border-bottom: none !important;
+    padding: 0 0 4px 0 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--ink) !important;
+  }
+
+  .card-body {
+    padding: 0 !important;
+  }
+}
+
+.card-subtitulo {
+  font-size: 12px;
+  color: var(--ink-40);
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+/* Value Boxes (KPIs fixos) */
+.bslib-value-box,
+.value-box {
+  border-radius: var(--radius-card) !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 14px 18px !important;
+
+  .value-box-title {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: var(--ink) !important;
+    opacity: 0.85;
+    margin-bottom: 4px !important;
+  }
+
+  .value-box-value {
+    font-size: 24px !important;
+    font-weight: 600 !important;
+    color: var(--ink) !important;
+    font-variant-numeric: tabular-nums !important;
+  }
+}
+
+/* Layout P2: Mapa + Ranking */
+.card-p2-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.mapa-ranking-flex {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.mapa-col {
+  flex: 1 1 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ranking-col {
+  flex: 1 1 40%;
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  border-left: 1px solid var(--divider);
+}
+
+.ranking-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ranking-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ranking-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.ranking-uf {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.ranking-val {
+  color: var(--ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ranking-track {
+  width: 100%;
+  height: 2px;
+  background-color: var(--ink-10);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.ranking-bar {
+  height: 100%;
+  background-color: var(--data-2);
+  border-radius: 1px;
+}
+
+.taxa-br-box {
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 1px solid var(--divider);
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+
+  .taxa-br-label {
+    color: var(--ink-40);
+  }
+
+  .taxa-br-val {
+    color: var(--ink);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Layout P3: Dumbbell */
+.card-p3-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dumbbell-legenda {
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  color: var(--ink-40);
+  margin-bottom: 6px;
+
+  .legenda-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dot-prev {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--data-2);
+  }
+
+  .dot-curr {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--data-1);
+  }
+
+  .bar-good {
+    width: 12px;
+    height: 2px;
+    background-color: var(--good);
+  }
+
+  .bar-bad {
+    width: 12px;
+    height: 2px;
+    background-color: var(--bad);
+  }
+}
+
+/* Layout P4: Tendência */
+.card-p4-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tendencia-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.tendencia-legenda-topo {
+  font-size: 12px;
+  color: var(--ink);
+
+  .legenda-ano-curr {
+    color: var(--data-1);
+  }
+
+  .legenda-ano-prev {
+    color: var(--ink-40);
+  }
+
+  .legenda-sep {
+    color: var(--ink-20);
+    margin: 0 4px;
+  }
+}
+
+/* Adaptação responsiva para telas pequenas (≤ 768px e 390px) */
+@media (max-width: 768px) {
+  .mapa-ranking-flex {
+    flex-direction: column;
+  }
+
+  .ranking-col {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--divider);
+    padding-top: 12px;
+    width: 100%;
+  }
+
+  .tendencia-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* Legenda do mapa (5 classes por quantis) */
+.mapa-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--ink-40);
+  margin-top: 6px;
+
+  .mapa-legenda-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  i {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+}
+
+.mapa-col {
+  flex-direction: column;
+}
+
+/* KPIs: número + variação (cor pela polaridade) + comparação */
+.kpi-num {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.kpi-delta {
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 10px;
+  white-space: nowrap;
+
+  &.bom { color: var(--good); }
+  &.ruim { color: var(--bad); }
+  &.neutro { color: var(--ink-80); }
+}
+
+.kpi-sub {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-40);
+  margin-top: 2px;
+}
+
+/* Gráficos do Plot escalam com o cartão */
+.card svg[class^="plot"], .card figure svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Cartão de KPI preenche o cartão do dashboard */
+.kpi-card {
+  height: 100%;
+  border-radius: var(--radius-card);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.kpi-rotulo {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.card:has(.kpi-card) {
+  background: transparent !important;
+}
+
+/* O código dos blocos OJS fica oculto: o scaffold vazio ocupava 76 px */
+.card .code-copy-outer-scaffold,
+.card .cell-code {
+  display: none !important;
+}
+
+.kpi-linha {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.kpi-card {
+  line-height: 1.3;
+}
+
+.kpi-delta {
+  margin-left: 0;
+}
+
+.card:has(.kpi-card) .card-body,
+.card:has(.kpi-card) .cell-output {
+  padding: 0 !important;
+}
+
+/* O Quarto marca os divs como "fill" (flex em coluna); aqui forçamos linha */
+.kpi-card > div {
+  flex: 0 0 auto !important;
+}
+
+.kpi-linha {
+  flex-direction: row !important;
+  align-items: baseline !important;
+}
+
+/* Marca da ferramenta (ícone Quarto 24 px + duas linhas de texto) */
+.sidebar-marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+
+  .marca-logo { width: 24px; height: 24px; flex-shrink: 0; }
+  .marca-titulo { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.2; }
+  .marca-sub { font-size: 12px; color: var(--ink-40); }
+}
+
+/* Filtro De/Até lado a lado */
+.sidebar form {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 8px 12px 0;
+  font-size: 13px;
+
+  label { margin: 0; color: var(--ink-40); font-size: 12px; width: auto !important; }
+  select { border: none; background: var(--hover); border-radius: var(--radius-control); padding: 4px 8px; font-size: 13px; color: var(--ink); }
+}
+
+/* Filtro De/Até compacto: rótulo e seletor na mesma linha */
+.sidebar form {
+  display: grid !important;
+  grid-template-columns: 38px 1fr;
+  align-items: center;
+  width: 100% !important;
+  margin: 0 0 8px 0 !important;
+  gap: 4px;
+
+  label { grid-column: 1; }
+  div { grid-column: 2; margin: 0 !important; }
+  select { width: 100%; }
+}
