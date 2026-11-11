@@ -168,6 +168,7 @@ Mudou a planilha? Rode `limparCache()` (o cache dura 6 h) ou aumente `versaoCach
 | "Coluna X não existe" | nome diferente no `CONFIG` | copie o cabeçalho exato |
 | "Nenhuma linha no recorte" | valor do recorte escrito diferente | copie o valor exato da planilha |
 | Visitante vê "acesso negado" ou "autorização necessária" | o dono nunca autorizou | execute `getDados` no editor uma vez |
+| "As permissões especificadas não são suficientes para chamar SpreadsheetApp.openById" | escopo só de leitura no `appsscript.json` | use `https://www.googleapis.com/auth/spreadsheets` (como no modelo) e autorize de novo |
 | Números antigos depois de mudar a planilha | cache | `limparCache()` ou aumente `versaoCache` |
 | Taxa absurda | o denominador muda dentro do grupo e ano | use outra coluna ou deixe `denominador: ''` |
 | Total com o dobro do esperado | linhas de total misturadas com o detalhe | inclua no recorte a coluna que separa o total |
@@ -184,7 +185,7 @@ Copie os três arquivos como estão e mude só o `CONFIG` (etapa 4).
   "timeZone": "America/Sao_Paulo",
   "runtimeVersion": "V8",
   "exceptionLogging": "STACKDRIVER",
-  "oauthScopes": ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+  "oauthScopes": ["https://www.googleapis.com/auth/spreadsheets"],
   "webapp": { "executeAs": "USER_DEPLOYING", "access": "ANYONE_ANONYMOUS" }
 }
 ```
