@@ -65,9 +65,8 @@ de `references/perguntas.md` e mostrar um `ESPEC.md` antes de escrever qualquer 
 
 ## Exemplo pronto
 
-`../painel_sinesp/` é esta skill aplicada aos dados de segurança pública (SINESP
-2025–2026, por UF). Compare o `CONFIG` de `painel_sinesp/Code.gs` com o do template:
-foi a única coisa que mudou.
+O [painel do SINESP](https://script.google.com/macros/s/AKfycbzveUVAHfTnYVZ4SKn-_aNEEPKepW6r3ztBLYDpJYuczfJ3FbS5ugmicIJs2Qw5B2YVFg/exec) é esta skill aplicada aos dados de segurança pública (SINESP
+2025–2026, por UF). Em relação ao template, só o `CONFIG` do `Code.gs` mudou.
 
 ---
 
