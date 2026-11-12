@@ -42,6 +42,7 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
     * [Painel em Apps Script](https://script.google.com/macros/s/AKfycbzveUVAHfTnYVZ4SKn-_aNEEPKepW6r3ztBLYDpJYuczfJ3FbS5ugmicIJs2Qw5B2YVFg/exec)
     * [Painel no Data Studio](https://datastudio.google.com/u/0/reporting/85b9d2f7-2787-4b8d-9b99-418b91406753/page/LQPDG)
     * [Painel em Apps Script: roubo de veículos no Sudeste](https://script.google.com/macros/s/AKfycbyYcm5ri3rYiCCNoywzPp5dMYOQovQUoHIvLh8FvsGpIIqiB3na1EWiuGxaG-M6AWDW/exec)
+    * [Skill para gerar painéis em Apps Script](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M09_dashboards/app_script/pvd-dashboard-apps-script-demo/SKILL.md)
 
 
 ## Tópicos abordados
