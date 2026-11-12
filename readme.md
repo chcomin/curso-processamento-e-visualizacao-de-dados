@@ -33,6 +33,11 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
 * M08 - Fundamentos de visualização de dados
     * [Conceitos fundamentais](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M08_fundamentos_de_visualizacao/1_conceitos_fundamentais.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M08_fundamentos_de_visualizacao/2_estetica_com_matplotlib.ipynb))
     * [Tipos de visualizações](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M08_fundamentos_de_visualizacao/3_tipos_de_visualizacoes.html) ([código](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M08_fundamentos_de_visualizacao/4_tipos_de_visualizacoes.ipynb))
+* M09 - Dashboards
+    * [Dashboards](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M09_dashboards/1_dashboards.html)
+    * [Manual do Data Studio](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M09_dashboards/manual_aluno_looker_studio.html)
+    * [Painel em Quarto](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M09_dashboards/paineis/quarto/painel.html)
+    * [Painel no Data Studio](https://datastudio.google.com/u/0/reporting/85b9d2f7-2787-4b8d-9b99-418b91406753/page/LQPDG)
 
 
 ## Tópicos abordados
