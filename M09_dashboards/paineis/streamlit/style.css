@@ -1,0 +1,585 @@
+/* ==========================================================================
+   Design Tokens — SnowUI Dashboard Design System (ByeWind / PVD)
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Superfícies */
+  --bg:            #FFFFFF;
+  --surface:       #F7F9FB;
+  --surface-blue:  #FFF1E3;
+  --surface-lav:   #F8EEE6;
+  --hover:         rgba(28, 28, 28, 0.05);
+  --selected:      rgba(28, 28, 28, 0.05);
+  --divider:       rgba(28, 28, 28, 0.10);
+
+  /* Texto (preto com opacidades) */
+  --ink:           #1C1C1C;
+  --ink-80:        rgba(28, 28, 28, 0.80);
+  --ink-40:        rgba(28, 28, 28, 0.40);
+  --ink-20:        rgba(28, 28, 28, 0.20);
+  --ink-10:        rgba(28, 28, 28, 0.10);
+
+  /* Séries de dados */
+  --data-1:        #4A2412;
+  --data-2:        #F2BE94;
+
+  /* Escala sequencial quantílica */
+  --seq-0:         #FFF1E3;
+  --seq-1:         #FFD2A8;
+  --seq-2:         #FFA766;
+  --seq-3:         #E07834;
+  --seq-4:         #9C4415;
+
+  /* Semântica de variação (delta) */
+  --good:          #0F7B5F;
+  --bad:           #C0362C;
+
+  /* Formas e dimensões */
+  --radius-card:   16px;
+  --radius-control: 8px;
+  --radius-pill:   999px;
+  --gap:           24px;
+  --pad-card:      20px;
+  --font:          "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* ==========================================================================
+   Sobrescrita Geral do Streamlit
+   ========================================================================== */
+html, body, [class*="css"], .stApp {
+  font-family: var(--font) !important;
+  background-color: var(--bg) !important;
+  color: var(--ink) !important;
+}
+
+/* Ajuste de espaçamento da área de conteúdo principal */
+.main .block-container {
+  padding-top: 1.5rem !important;
+  padding-bottom: 2.5rem !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+  max-width: 1440px !important;
+}
+
+/* Ocultar barra superior decorativa do Streamlit */
+header[data-testid="stHeader"] {
+  background-color: transparent !important;
+}
+
+/* ==========================================================================
+   Barra Lateral (Menu de Indicadores)
+   ========================================================================== */
+section[data-testid="stSidebar"] {
+  background-color: var(--bg) !important;
+  border-right: 1px solid var(--divider) !important;
+  padding-top: 1.5rem !important;
+}
+
+.sidebar-header {
+  padding: 0 4px 12px 4px;
+}
+
+.sidebar-pretitle {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ink-40);
+  margin-bottom: 4px;
+}
+
+.sidebar-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sidebar-divider {
+  height: 1px;
+  background-color: var(--divider);
+  margin: 12px 0 16px 0;
+}
+
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--ink-40);
+  margin-bottom: 12px;
+  padding-left: 4px;
+}
+
+/* Itens de rádio da barra lateral */
+section[data-testid="stSidebar"] [role="radiogroup"] label {
+  padding: 6px 10px !important;
+  border-radius: var(--radius-control) !important;
+  transition: background 0.15s ease-in-out;
+  cursor: pointer;
+  margin-bottom: 2px;
+}
+
+section[data-testid="stSidebar"] [role="radiogroup"] label:hover {
+  background-color: var(--hover) !important;
+}
+
+section[data-testid="stSidebar"] [role="radiogroup"] label p {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--ink) !important;
+}
+
+/* Subtítulo/categoria (captions) no rádio */
+section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+  font-size: 11px !important;
+  color: var(--ink-40) !important;
+  margin-top: -2px !important;
+}
+
+/* ==========================================================================
+   Topo e Títulos
+   ========================================================================== */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.breadcrumb-root {
+  color: var(--ink-40);
+}
+
+.breadcrumb-sep {
+  color: var(--ink-20);
+}
+
+.breadcrumb-current {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.period-chip {
+  font-size: 12px;
+  color: var(--ink);
+  background-color: var(--hover);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-weight: 500;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 20px;
+  letter-spacing: -0.3px;
+}
+
+/* ==========================================================================
+   Bloco P1: Cartões de KPI
+   ========================================================================== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  border-radius: var(--radius-card);
+  padding: 18px 22px;
+  height: 112px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.kpi-card.blue {
+  background-color: var(--surface-blue);
+}
+
+.kpi-card.lav {
+  background-color: var(--surface-lav);
+}
+
+.kpi-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.kpi-middle {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.kpi-number {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.kpi-delta {
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-delta.good {
+  color: var(--good);
+}
+
+.kpi-delta.bad {
+  color: var(--bad);
+}
+
+.kpi-delta.neutral {
+  color: var(--ink-80);
+}
+
+.kpi-footer {
+  font-size: 12px;
+  color: var(--ink-40);
+}
+
+/* ==========================================================================
+   Contêineres de Gráficos e Componentes
+   ========================================================================== */
+.card-container {
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: var(--ink-40);
+  margin-bottom: 8px;
+}
+
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+/* ==========================================================================
+   P2: Ranking Top 5 (Estilo SnowUI "Revenue by Location")
+   ========================================================================== */
+.ranking-box {
+  padding-left: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 320px;
+}
+
+.ranking-header-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-40);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ranking-row-item {
+  margin-bottom: 14px;
+}
+
+.ranking-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.ranking-name {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.ranking-val {
+  color: var(--ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ranking-track {
+  height: 2px;
+  width: 100%;
+  background-color: var(--ink-10);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.ranking-fill {
+  height: 100%;
+  background-color: var(--data-2);
+  border-radius: var(--radius-pill);
+}
+
+/* ==========================================================================
+   P2: Legenda Quantílica do Mapa
+   ========================================================================== */
+.map-legend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.legend-text {
+  font-size: 11px;
+  color: var(--ink-40);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   P4: Legenda do Cabeçalho da Tendência
+   ========================================================================== */
+.trend-legend-header {
+  font-size: 12px;
+  color: var(--ink-40);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.legend-dot-2026 {
+  color: var(--ink);
+}
+
+.legend-dot-2025 {
+  color: var(--ink-40);
+}
+
+.legend-sep {
+  color: var(--ink-20);
+}
+
+/* ==========================================================================
+   Seção "Sobre os dados" (Notificações SnowUI)
+   ========================================================================== */
+.about-card {
+  background-color: var(--surface);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  margin-top: 36px;
+}
+
+.about-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 20px;
+}
+
+.about-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.about-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--surface-blue);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.about-heading {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.about-desc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-40);
+}
+
+/* ==========================================================================
+   Responsividade Mobile (<= 768px / 390px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  .card-header-flex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .ranking-box {
+    padding-left: 0;
+    margin-top: 16px;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .period-chip {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Ajustes de revisão: cartões, KPIs e chrome do Streamlit
+   ========================================================================== */
+/* Cartões: containers com chave (st.container(key=...)) viram cartão cinza suave, sem borda nem sombra */
+[class*="st-key-card_"] {
+  background-color: var(--surface) !important;
+  border-radius: var(--radius-card) !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: var(--pad-card) !important;
+  margin-bottom: var(--gap);
+}
+
+/* Oculta menu, rodapé e botão de deploy padrões */
+#MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDecoration"],
+[data-testid="stAppDeployButton"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* KPI: número e variação na mesma linha, sem quebra */
+.kpi-middle { flex-wrap: nowrap; gap: 8px; }
+.kpi-number, .kpi-delta { white-space: nowrap; }
+.kpi-footer { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi-card { height: auto; min-height: 112px; gap: 10px; }
+
+/* Cabeçalho do cartão de tendência: título à esquerda, legenda à direita */
+.card-header-flex { gap: 12px; flex-wrap: wrap; }
+
+/* Cartão "Sobre os dados" sem sombra */
+.about-card { box-shadow: none; }
+
+@media (max-width: 768px) {
+  .main .block-container { padding-left: 1rem !important; padding-right: 1rem !important; }
+  .ranking-box { height: auto; }
+  [class*="st-key-card_"] { padding: 16px !important; }
+}
+
+/* Legenda do mapa: itens sem quebra interna, quebrando linha entre itens */
+.map-legend { flex-wrap: wrap; gap: 4px 10px; justify-content: center; }
+.legend-text { white-space: nowrap; font-size: 10px; }
+
+/* Marca da ferramenta no topo da barra lateral */
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 4px 12px 4px; }
+.brand-logo svg { display: block; }
+.brand-title { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.25; }
+.brand-sub { font-size: 12px; color: var(--ink-40); }
+.brand-sub strong { font-weight: 600; color: var(--ink-80); }
+/* Destaque âmbar: item ativo do rádio e controle deslizante */
+section[data-testid="stSidebar"] [role="radiogroup"] label:has(input:checked) { background-color: var(--selected) !important; }
+
+/* Espaço entre o filtro de meses e os KPIs */
+[data-testid="stSlider"] { margin-bottom: 20px; }
+
+/* ==========================================================================
+   Cabecalho H1/H2, H3 dos cartoes, "?" e controles da barra lateral
+   ========================================================================== */
+h1.page-title { font-size: 26px; font-weight: 700; color: var(--ink); margin: 0 0 4px 0; padding: 0; letter-spacing: -0.3px; line-height: 1.2; }
+h2.page-tool { font-size: 16px; font-weight: 400; color: var(--ink-40); margin: 0 0 20px 0; padding: 0; display: flex; align-items: center; gap: 8px; line-height: 1.2; }
+h2.page-tool strong { font-weight: 600; color: var(--ink-80); }
+.page-tool-logo svg { display: block; fill: #FF4B4B; }
+h3.card-title { font-size: 14px; font-weight: 600; color: var(--ink); margin: 0 0 2px 0; padding: 0; line-height: 1.3; }
+/* ancoras que o Streamlit injeta nos cabecalhos */
+h1 a, h2 a, h3 a, [data-testid="stHeaderActionElements"] { display: none !important; }
+.visao-geral { font-size: 12px; font-weight: 600; color: var(--ink-40); text-transform: uppercase; letter-spacing: .04em; }
+
+/* linha titulo + "?" nunca empilha */
+[class*="st-key-cab_"] [data-testid="stHorizontalBlock"] { flex-wrap: nowrap !important; gap: 8px !important; align-items: flex-start; }
+[class*="st-key-cab_"] [data-testid="stColumn"] { min-width: 0 !important; }
+[class*="st-key-cab_"] [data-testid="stColumn"]:last-child { flex: 0 0 24px !important; width: 24px !important; }
+[class*="st-key-cab_"] [data-testid="stColumn"]:first-child { flex: 1 1 auto !important; width: auto !important; }
+[class*="st-key-cab_"] { margin-bottom: 0; }
+
+/* botao "?" redondo */
+[class*="st-key-ajuda_"] button {
+  width: 22px !important; height: 22px !important; min-height: 22px !important; padding: 0 !important;
+  border-radius: 50% !important; border: 1px solid var(--ink-40) !important; background: transparent !important;
+  color: var(--ink-40) !important; font-size: 12px !important; font-weight: 600; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+[class*="st-key-ajuda_"] button:hover { background: var(--hover) !important; color: var(--ink) !important; }
+[class*="st-key-ajuda_"] button:focus-visible { outline: 2px solid var(--ink) !important; outline-offset: 2px; }
+[class*="st-key-ajuda_"] button svg { display: none !important; }
+[class*="st-key-ajuda_"] button p { font-size: 12px; margin: 0; }
+[data-testid="stPopoverBody"] { width: min(420px, 90vw) !important; max-width: 90vw !important; font-size: 13px; line-height: 1.5; }
+
+/* controles da barra lateral sempre visiveis */
+[data-testid="stSidebarCollapseButton"], [data-testid="stSidebarCollapseButton"] button,
+[data-testid="stExpandSidebarButton"] {
+  visibility: visible !important; opacity: 1 !important; display: flex !important;
+}
+[data-testid="stSidebarCollapseButton"] button, [data-testid="stExpandSidebarButton"] {
+  border: 1px solid var(--ink-40) !important; border-radius: 8px !important;
+  background: #FFFFFF !important; color: var(--ink) !important;
+}
+[data-testid="stSidebarCollapseButton"] button:hover, [data-testid="stExpandSidebarButton"]:hover { background: var(--hover) !important; }
+[data-testid="stSidebarCollapseButton"] button:focus-visible, [data-testid="stExpandSidebarButton"]:focus-visible { outline: 2px solid var(--ink) !important; outline-offset: 2px; }
+[data-testid="stSidebarCollapseButton"] svg, [data-testid="stExpandSidebarButton"] svg { color: var(--ink) !important; fill: currentColor; }
+header[data-testid="stHeader"] { visibility: visible !important; }
+h2.page-tool > span[data-heading-text] { display: inline-flex; align-items: center; gap: 8px; }
+[class*="st-key-ajuda_"] button [aria-hidden="true"] { display: none !important; }
+[class*="st-key-ajuda_"] button > div { padding: 0 !important; margin: 0 !important; justify-content: center; }
+[class*="st-key-ajuda_"] [data-testid="stPopover"] { display: flex; justify-content: flex-end; }
+/* o botao de reabrir a barra mora dentro do stToolbar: mantem o toolbar, esconde so o resto */
+[data-testid="stToolbar"] { display: flex !important; visibility: visible !important; }
+[data-testid="stToolbar"] > *:not(:has([data-testid="stExpandSidebarButton"])):not([data-testid="stExpandSidebarButton"]) { display: none !important; }
+h2.page-tool > span[data-heading-text] { display: block; }
+.page-tool-logo { display: inline-block; vertical-align: -4px; margin-right: 8px; }
