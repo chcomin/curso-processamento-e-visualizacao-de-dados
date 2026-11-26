@@ -36,7 +36,7 @@ Navegue nos diretórios acima para acessar os códigos do curso. Para visualizar
 * M09 - Dashboards
     * [Dashboards](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M09_dashboards/1_dashboards.html)
     * [Skill para gerar painéis em Apps Script](https://github.com/chcomin/curso-processamento-e-visualizacao-de-dados/blob/main/M09_dashboards/app_script/pvd-dashboard-apps-script-demo/SKILL.md)
-    
+    * [Frameworks de dashboards](https://chcomin.github.io/curso-processamento-e-visualizacao-de-dados/M09_dashboards/2_dashboards_na_pratica.html)     
 
 
 ## Tópicos abordados
